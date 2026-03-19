@@ -689,16 +689,57 @@ export default function App() {
               </div>
             </div>
 
-            {/* Video del día */}
+            {/* Widget: Playlist Video del Día */}
             <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,overflow:"hidden",marginBottom:14 }}>
               <div style={{ padding:"12px 14px 10px",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
                 <div>
-                  <div style={{ fontSize:10,color:GREEN,fontWeight:700 }}>📹 VIDEO DEL DÍA {alfaDia}</div>
-                  <div style={{ fontSize:14,fontWeight:700 }}>Análisis + Operación del Comando ALFA</div>
+                  <div style={{ fontSize:10,color:GREEN,fontWeight:700 }}>📹 VIDEO DEL DÍA {alfaVideos.find(v=>v.url===alfaVideoUrl)?.dia || alfaDia}</div>
+                  <div style={{ fontSize:14,fontWeight:700 }}>Historial de Sesiones ALFA</div>
                 </div>
-                <span style={{ background:"rgba(255,200,0,0.15)",color:"#ffc800",border:"1px solid rgba(255,200,0,0.3)",borderRadius:6,padding:"2px 9px",fontSize:10,fontWeight:700 }}>LIVE</span>
+                <span style={{ background:"rgba(255,0,0,0.15)",color:"#ff4455",border:"1px solid rgba(255,0,0,0.3)",borderRadius:6,padding:"2px 9px",fontSize:10,fontWeight:700,display:"flex",alignItems:"center",gap:4 }}><div style={{width:6,height:6,borderRadius:"50%",background:"#ff4455",animation:"pulse 2s infinite"}}/> REC</span>
               </div>
-              <YTEmbed url={alfaVideoUrl} style={{ width:"100%",height:210 }} />
+              
+              {/* Reproductor Principal */}
+              <YTEmbed url={alfaVideoUrl} style={{ width:"100%",height:220 }} />
+              
+              {/* Lista de Reproducción (Scrollable) */}
+              {alfaVideos.length > 0 && (
+                <div style={{ maxHeight: 220, overflowY: "auto", background: "rgba(0,0,0,0.2)", borderTop: `1px solid ${BORDER}` }}>
+                  {[...alfaVideos].reverse().map(v => {
+                    const isActive = v.url === alfaVideoUrl;
+                    return (
+                      <div key={v.id} 
+                        onClick={() => setAlfaVideoUrl(v.url)}
+                        style={{ 
+                          padding: "12px 16px",
+                          display: "flex", alignItems: "center", gap: 12,
+                          cursor: "pointer",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          background: isActive ? "rgba(0,255,136,0.05)" : "transparent",
+                          transition: "background 0.2s"
+                        }}>
+                        <div style={{ 
+                          width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                          background: isActive ? GREEN : "rgba(255,255,255,0.1)",
+                          color: isActive ? BG : "#fff",
+                          display: "flex", justifyContent: "center", alignItems: "center",
+                          fontSize: 12
+                        }}>
+                          {isActive ? "▶" : "▶"}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? GREEN : "#fff" }}>
+                            Reto Día {v.dia}
+                          </div>
+                          <div style={{ fontSize: 11, color: MUTED }}>
+                            {isActive ? "Reproduciendo ahora" : "Toca para ver el análisis de este día"}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Mini equity */}
