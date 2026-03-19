@@ -164,26 +164,36 @@ export default function App() {
   // Comando ALFA data (editable por admin)
   // Comando ALFA data (editable por admin)
   const [alfaOps, setAlfaOps] = useState<any[]>([]);
+  const [alfaVideos, setAlfaVideos] = useState<any[]>([]);
   const [alfaVideoUrl, setAlfaVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [introVideoUrl, setIntroVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [alfaDia, setAlfaDia] = useState(1);
+  const [aVideoDia, setAVideoDia] = useState(1);
+  const [editingOpId, setEditingOpId] = useState<any>(null);
+  const [editingVideoId, setEditingVideoId] = useState<any>(null);
 
   // Cargar datos de Supabase
   useEffect(() => {
     const fetchData = async () => {
-      // Configuraciones
+      // Configuraciones (solo intro_video_url)
       const { data: config } = await supabase.from("app_config").select("*");
       if (config) {
         config.forEach(c => {
-          if (c.key === "alfa_video_url") setAlfaVideoUrl(c.value);
           if (c.key === "intro_video_url") setIntroVideoUrl(c.value);
         });
+      }
+      // Videos del día (historial)
+      const { data: vids } = await supabase.from("alfa_videos").select("*").order("dia", { ascending: true });
+      if (vids && vids.length > 0) {
+        setAlfaVideos(vids);
+        setAVideoDia(vids[vids.length - 1].dia + 1);
+        setAlfaVideoUrl(vids[vids.length - 1].url);
       }
       // Bitácora de operaciones
       const { data: ops } = await supabase.from("alfa_ops").select("*").order("created_at", { ascending: true });
       if (ops) {
         setAlfaOps(ops);
-        setAlfaDia(ops.length + 1);
+        if (ops.length > 0) setAlfaDia(Number(ops[ops.length - 1].dia.replace("D","")) + 1);
       }
     };
     fetchData();
@@ -255,20 +265,40 @@ export default function App() {
     const emoji = Number(aRes)>0?"✅":Number(aRes)<0?"🛑":"⚠️";
     const op = { dia:`D${n}`,inst:aInst,tipo:aTipo,entry:aEntry,res:Number(aRes),nota:aNota,e:emoji };
     
-    // Optimistic UI + Insert
-    const tempId = Date.now();
-    setAlfaOps(prev=>[...prev,{ ...op, id: tempId }]);
-    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n+1);
-    award(0, "✅ Operación guardada localmente...");
-    
-    const { data } = await supabase.from("alfa_ops").insert([op]).select();
-    if (data && data[0]) {
-      setAlfaOps(prev => prev.map(o => o.id === tempId ? data[0] : o));
-      setToast("✅ Operación sincronizada con Supabase");
+    if (editingOpId) {
+      // Update
+      setAlfaOps(prev => prev.map(o => o.id === editingOpId ? { ...o, ...op } : o));
+      setEditingOpId(null);
+      setAEntry(""); setARes(""); setANota("");
+      await supabase.from("alfa_ops").update(op).eq("id", editingOpId);
+      award(0, "✅ Operación actualizada");
     } else {
-      setToast("⚠️ Error guardando en Supabase");
+      // Insert optimistic
+      const tempId = Date.now();
+      setAlfaOps(prev=>[...prev,{ ...op, id: tempId }]);
+      setAEntry(""); setARes(""); setANota(""); setAlfaDia(n+1);
+      award(0, "✅ Operación guardada localmente...");
+      
+      const { data } = await supabase.from("alfa_ops").insert([op]).select();
+      if (data && data[0]) {
+        setAlfaOps(prev => prev.map(o => o.id === tempId ? data[0] : o));
+        setToast("✅ Operación sincronizada con Supabase");
+      } else {
+        setToast("⚠️ Error guardando en Supabase");
+      }
     }
     setTimeout(()=>setToast(null),2500);
+  };
+
+  const editOp = (o: any) => {
+    setEditingOpId(o.id);
+    setAInst(o.inst);
+    setATipo(o.tipo);
+    setAEntry(o.entry);
+    setARes(o.res.toString());
+    setANota(o.nota);
+    setAlfaDia(Number(o.dia.replace("D", "")));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const deleteAlfaOp = async (id: any) => {
@@ -276,6 +306,45 @@ export default function App() {
     setAlfaOps(prev => prev.filter(o => o.id !== id));
     award(0, "🗑️ Operación eliminada");
     await supabase.from("alfa_ops").delete().eq("id", id);
+  };
+
+  const addAlfaVideo = async () => {
+    if (!aVideo.trim()) return;
+    const n = aVideoDia;
+    const v = { dia: n, url: aVideo };
+
+    if (editingVideoId) {
+      setAlfaVideos(prev => prev.map(o => o.id === editingVideoId ? { ...o, ...v } : o));
+      setEditingVideoId(null);
+      setAVideo("");
+      await supabase.from("alfa_videos").update(v).eq("id", editingVideoId);
+      award(0, "✅ Video actualizado");
+    } else {
+      const tempId = Date.now();
+      setAlfaVideos(prev => [...prev, { ...v, id: tempId }]);
+      setAVideo(""); setAVideoDia(n + 1);
+      const { data } = await supabase.from("alfa_videos").insert([v]).select();
+      if (data && data[0]) {
+        setAlfaVideos(prev => prev.map(o => o.id === tempId ? data[0] : o));
+      }
+      award(0, "✅ Video publicado");
+    }
+    if (n >= Math.max(0, ...alfaVideos.map(x=>x.dia), n)) setAlfaVideoUrl(aVideo);
+    setTimeout(()=>setToast(null),2500);
+  };
+
+  const editVideo = (v: any) => {
+    setEditingVideoId(v.id);
+    setAVideo(v.url);
+    setAVideoDia(v.dia);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const deleteAlfaVideo = async (id: any) => {
+    if (!confirm("¿Estás seguro de eliminar este video?")) return;
+    setAlfaVideos(prev => prev.filter(o => o.id !== id));
+    award(0, "🗑️ Video eliminado");
+    await supabase.from("alfa_videos").delete().eq("id", id);
   };
 
   const addUserOp = () => {
@@ -413,17 +482,29 @@ export default function App() {
 
           {/* Video del día */}
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN }}>📹 Video del Día ({alfaDia})</div>
-            {inp("URL del video de YouTube del día",aVideo,setAVideo,"url","🔗",true)}
-            <button onClick={async ()=>{ 
-              if(aVideo.trim()){ 
-                setAlfaVideoUrl(aVideo); setAVideo(""); 
-                await supabase.from("app_config").upsert({ key: "alfa_video_url", value: aVideo });
-                setToast("✅ Video del día actualizado"); setTimeout(()=>setToast(null),2500); 
-              }}}
-              style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
-              Actualizar Video del Día
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN,display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+              <span>📹 Publicar Video del Día</span>
+              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
+                <input type="number" value={aVideoDia} onChange={(e)=>setAVideoDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
+              </div>
+            </div>
+            {inp("URL del video de YouTube",aVideo,setAVideo,"url","🔗",true)}
+            <button onClick={addAlfaVideo}
+              style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:16 }}>
+              {editingVideoId ? "💾 Guardar Cambios" : "➕ Publicar Video"}
             </button>
+            <div style={{ borderTop:`1px solid ${BORDER}`,paddingTop:12 }}>
+              <div style={{ fontWeight:700,fontSize:13,marginBottom:8,color:MUTED }}>VIDEOS PUBLICADOS ({alfaVideos.length})</div>
+              {[...alfaVideos].reverse().map(v=>(
+                <div key={v.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
+                  <span style={{ color:MUTED, width:60, fontWeight:700 }}>Día {v.dia}</span>
+                  <span style={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color:GREEN }}>{v.url}</span>
+                  <button onClick={() => editVideo(v)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar video">✏️</button>
+                  <button onClick={() => deleteAlfaVideo(v.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar video">🗑️</button>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Video intro */}
@@ -473,7 +554,7 @@ export default function App() {
               style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 12px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:70,resize:"none",marginBottom:10 }} />
             <button onClick={addAlfaOp}
               style={{ background:"linear-gradient(135deg,#ffc800,#ff9900)",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
-              ➕ Publicar Operación
+              {editingOpId ? "💾 Guardar Cambios" : "➕ Publicar Operación"}
             </button>
           </div>
 
@@ -485,6 +566,7 @@ export default function App() {
                 <span style={{ color:MUTED, width:40 }}>{o.dia}</span>
                 <span style={{ flex:1 }}>{o.e} {o.inst} — {o.tipo}</span>
                 <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455", width:60, textAlign:"right" }}>{o.res>0?"+":""}{o.res}</span>
+                <button onClick={() => editOp(o)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar operación">✏️</button>
                 <button onClick={() => deleteAlfaOp(o.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar operación">🗑️</button>
               </div>
             ))}
