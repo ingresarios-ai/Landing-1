@@ -194,3 +194,39 @@ body {
     display: none !important;
   }
 }
+
+/* Playlist Responsive Widget */
+.playlist-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.playlist-list {
+  max-height: 220px;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.2);
+}
+
+@media (min-width: 768px) {
+  .playlist-wrapper {
+    flex-direction: row;
+  }
+  
+  .playlist-video {
+    flex: 2.2;
+    height: 450px !important; /* Larger video for desktop */
+  }
+  
+  .playlist-list {
+    flex: 1;
+    max-height: 450px !important;
+    border-top: none !important;
+    border-left: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
