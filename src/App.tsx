@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
 import { Home, BarChart2, BookOpen, Users, Star, Shield, TrendingUp } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
+
+// Inicializar cliente Supabase
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ─── COLORES ───────────────────────────────────────
 const BG = "#050d1a", CARD = "rgba(255,255,255,0.04)", BORDER = "rgba(255,255,255,0.1)";
@@ -31,15 +37,6 @@ const COUNTRY_DATA: Record<string, { flag: string; code: string }> = {
 };
 
 // ─── DATOS INICIALES ───────────────────────────────
-const initOps = [
-  { id:1,dia:"D1",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5820/5830-5870/5880",res:180,nota:"Setup limpio. GENY Trend confirmó rango. Comando ALFA ejecutó perfecto.",e:"✅" },
-  { id:2,dia:"D2",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5810/5820-5860/5870",res:-120,nota:"Rompió el rango. Stop ejecutado sin hesitación. Disciplina del Comando.",e:"🛑" },
-  { id:3,dia:"D3",inst:"SPX 0DTE",tipo:"Call Spread",entry:"5835/5845",res:290,nota:"Momentum alcista claro. Sniper dio señal perfecta.",e:"✅" },
-  { id:4,dia:"D4",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5820/5830-5875/5885",res:-50,nota:"Día lateral. Salimos al 50% del max profit.",e:"⚠️" },
-  { id:5,dia:"D5",inst:"QQQ",tipo:"Put Spread",entry:"470/467",res:320,nota:"Debilidad tecnológica. Flow institucional bajista confirmó.",e:"✅" },
-  { id:6,dia:"D6",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5840/5850-5890/5900",res:410,nota:"Día perfecto. Theta decay máximo. PEDEM al 100%.",e:"🚀" },
-  { id:7,dia:"D7",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5855/5865-5905/5915",res:250,nota:"Consistencia del Comando. El proceso es el resultado.",e:"✅" },
-];
 
 const buildEquity = (ops: any[]) => {
   let v = 2000;
@@ -165,10 +162,32 @@ export default function App() {
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState(false);
   // Comando ALFA data (editable por admin)
-  const [alfaOps, setAlfaOps] = useState(initOps);
+  // Comando ALFA data (editable por admin)
+  const [alfaOps, setAlfaOps] = useState<any[]>([]);
   const [alfaVideoUrl, setAlfaVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [introVideoUrl, setIntroVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-  const [alfaDia, setAlfaDia] = useState(7);
+  const [alfaDia, setAlfaDia] = useState(1);
+
+  // Cargar datos de Supabase
+  useEffect(() => {
+    const fetchData = async () => {
+      // Configuraciones
+      const { data: config } = await supabase.from("app_config").select("*");
+      if (config) {
+        config.forEach(c => {
+          if (c.key === "alfa_video_url") setAlfaVideoUrl(c.value);
+          if (c.key === "intro_video_url") setIntroVideoUrl(c.value);
+        });
+      }
+      // Bitácora de operaciones
+      const { data: ops } = await supabase.from("alfa_ops").select("*").order("created_at", { ascending: true });
+      if (ops) {
+        setAlfaOps(ops);
+        setAlfaDia(ops.length + 1);
+      }
+    };
+    fetchData();
+  }, []);
   // Admin form
   const [aInst, setAInst] = useState("SPX 0DTE");
   const [aTipo, setATipo] = useState("Iron Condor");
@@ -230,13 +249,25 @@ export default function App() {
     }, 3000);
   };
 
-  const addAlfaOp = () => {
+  const addAlfaOp = async () => {
     if (!aEntry || !aRes) return;
     const n = alfaOps.length+1;
     const emoji = Number(aRes)>0?"✅":Number(aRes)<0?"🛑":"⚠️";
-    setAlfaOps(prev=>[...prev,{ id:n,dia:`D${n}`,inst:aInst,tipo:aTipo,entry:aEntry,res:Number(aRes),nota:aNota,e:emoji }]);
-    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n);
-    award(0, "✅ Operación registrada en la bitácora");
+    const op = { dia:`D${n}`,inst:aInst,tipo:aTipo,entry:aEntry,res:Number(aRes),nota:aNota,e:emoji };
+    
+    // Optimistic UI + Insert
+    setAlfaOps(prev=>[...prev,{ ...op, id: n }]);
+    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n+1);
+    award(0, "✅ Operación guardada localmente...");
+    
+    const { data } = await supabase.from("alfa_ops").insert([op]).select();
+    if (data && data[0]) {
+      setAlfaOps(prev => prev.map(o => o.id === n ? data[0] : o));
+      setToast("✅ Operación sincronizada con Supabase");
+    } else {
+      setToast("⚠️ Error guardando en Supabase");
+    }
+    setTimeout(()=>setToast(null),2500);
   };
 
   const addUserOp = () => {
@@ -376,7 +407,12 @@ export default function App() {
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
             <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN }}>📹 Video del Día ({alfaDia})</div>
             {inp("URL del video de YouTube del día",aVideo,setAVideo,"url","🔗",true)}
-            <button onClick={()=>{ if(aVideo.trim()){ setAlfaVideoUrl(aVideo); setAVideo(""); setToast("✅ Video del día actualizado"); setTimeout(()=>setToast(null),2500); }}}
+            <button onClick={async ()=>{ 
+              if(aVideo.trim()){ 
+                setAlfaVideoUrl(aVideo); setAVideo(""); 
+                await supabase.from("app_config").upsert({ key: "alfa_video_url", value: aVideo });
+                setToast("✅ Video del día actualizado"); setTimeout(()=>setToast(null),2500); 
+              }}}
               style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
               Actualizar Video del Día
             </button>
@@ -386,7 +422,12 @@ export default function App() {
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
             <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
             {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
-            <button onClick={()=>{ if(aIntroVideo.trim()){ setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); }}}
+            <button onClick={async ()=>{ 
+              if(aIntroVideo.trim()){ 
+                setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
+                await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
+                setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
+              }}}
               style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
               Actualizar Video Intro
             </button>
