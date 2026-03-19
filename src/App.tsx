@@ -251,18 +251,19 @@ export default function App() {
 
   const addAlfaOp = async () => {
     if (!aEntry || !aRes) return;
-    const n = alfaOps.length+1;
+    const n = alfaDia;
     const emoji = Number(aRes)>0?"✅":Number(aRes)<0?"🛑":"⚠️";
     const op = { dia:`D${n}`,inst:aInst,tipo:aTipo,entry:aEntry,res:Number(aRes),nota:aNota,e:emoji };
     
     // Optimistic UI + Insert
-    setAlfaOps(prev=>[...prev,{ ...op, id: n }]);
-    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n+1);
+    const tempId = Date.now();
+    setAlfaOps(prev=>[...prev,{ ...op, id: tempId }]);
+    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n<7 ? n+1 : 7);
     award(0, "✅ Operación guardada localmente...");
     
     const { data } = await supabase.from("alfa_ops").insert([op]).select();
     if (data && data[0]) {
-      setAlfaOps(prev => prev.map(o => o.id === n ? data[0] : o));
+      setAlfaOps(prev => prev.map(o => o.id === tempId ? data[0] : o));
       setToast("✅ Operación sincronizada con Supabase");
     } else {
       setToast("⚠️ Error guardando en Supabase");
@@ -435,7 +436,15 @@ export default function App() {
 
           {/* Nueva operación */}
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800" }}>📋 Agregar Operación a la Bitácora</div>
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+              <span>📋 Agregar Operación a la Bitácora</span>
+              <div style={{ display:"flex",alignItems:"center",gap:6 }}>
+                <span style={{ fontSize:10,color:MUTED }}>Publicar en:</span>
+                <select value={alfaDia} onChange={(e)=>setAlfaDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"none",borderRadius:4,padding:"2px 4px",fontSize:11,outline:"none" }}>
+                  {[1,2,3,4,5,6,7].map(d => <option key={d} value={d}>Día {d}</option>)}
+                </select>
+              </div>
+            </div>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
               <div>
                 <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Instrumento</div>
@@ -459,7 +468,7 @@ export default function App() {
               style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 12px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:70,resize:"none",marginBottom:10 }} />
             <button onClick={addAlfaOp}
               style={{ background:"linear-gradient(135deg,#ffc800,#ff9900)",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
-              ➕ Publicar Operación — Día {alfaOps.length+1}
+              ➕ Publicar Operación
             </button>
           </div>
 
