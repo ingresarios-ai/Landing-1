@@ -231,33 +231,39 @@ export default function App() {
   // ─── PANTALLA INTRO ────────────────────────────────
   if (screen === "intro") return (
     <div style={{ background:`linear-gradient(135deg,${BG},#0a1628)`,minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:FONT,padding:20 }}>
-      <div style={{ maxWidth:520,width:"100%" }}>
-        <div style={{ textAlign:"center",marginBottom:20 }}>
-          <div style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,padding:"4px 14px",marginBottom:14 }}>
-            <span style={{ color:GREEN,fontSize:11,fontWeight:700,letterSpacing:2 }}>INGRESARIOS · COMANDO ALFA</span>
-          </div>
-          <h1 style={{ color:"#fff",fontSize:44,fontWeight:900,margin:"0 0 6px",lineHeight:1 }}>RETO <span style={{ color:GREEN }}>2K→20K</span></h1>
-          <p style={{ color:MUTED,fontSize:14,margin:0 }}>Mira el mensaje del Comando ALFA antes de unirte</p>
-        </div>
-
-        <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:16,overflow:"hidden",marginBottom:20 }}>
-          <YTEmbed url={introVideoUrl} style={{ width:"100%",height:240 }} />
-        </div>
-
-        <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:20 }}>
-          {[["📅","7 Días","en vivo"],["📊","Bitácora","operación x op."],["🧠","Flow+Sombra","mini clases"]].map(([ico,v,l])=>(
-            <div key={l} style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px 8px",textAlign:"center" }}>
-              <div style={{ fontSize:20,marginBottom:3 }}>{ico}</div>
-              <div style={{ color:"#fff",fontWeight:700,fontSize:12 }}>{v}</div>
-              <div style={{ color:MUTED,fontSize:11 }}>{l}</div>
+      <div className="landing-container">
+        {/* Lado Texto */}
+        <div className="landing-text">
+          <div style={{ marginBottom:20 }}>
+            <div style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,padding:"4px 14px",marginBottom:14 }}>
+              <span style={{ color:GREEN,fontSize:11,fontWeight:700,letterSpacing:2 }}>INGRESARIOS · COMANDO ALFA</span>
             </div>
-          ))}
+            <h1 className="landing-title" style={{ color:"#fff",fontSize:44,fontWeight:900,margin:"0 0 6px",lineHeight:1 }}>RETO <span style={{ color:GREEN }}>2K→20K</span></h1>
+            <p style={{ color:MUTED,fontSize:14,margin:0 }}>Mira el mensaje del Comando ALFA antes de unirte</p>
+          </div>
+
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:20 }}>
+            {[["📅","7 Días","en vivo"],["📊","Bitácora","operación x op."],["🧠","Flow+Sombra","mini clases"]].map(([ico,v,l])=>(
+              <div key={l as string} style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px 8px",textAlign:"center" }}>
+                <div style={{ fontSize:20,marginBottom:3 }}>{ico as string}</div>
+                <div style={{ color:"#fff",fontWeight:700,fontSize:12 }}>{v as string}</div>
+                <div style={{ color:MUTED,fontSize:11 }}>{l as string}</div>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={()=>setScreen("reg")}
+            style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:12,padding:"16px",color:BG,fontWeight:800,fontSize:16,cursor:"pointer" }}>
+            🚀 QUIERO UNIRME AL COMANDO ALFA — ES GRATIS
+          </button>
         </div>
 
-        <button onClick={()=>setScreen("reg")}
-          style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:12,padding:"16px",color:BG,fontWeight:800,fontSize:16,cursor:"pointer" }}>
-          🚀 QUIERO UNIRME AL COMANDO ALFA — ES GRATIS
-        </button>
+        {/* Lado Video */}
+        <div className="landing-media">
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:16,overflow:"hidden" }}>
+            <YTEmbed url={introVideoUrl} style={{ width:"100%",aspectRatio:"16/9" }} />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -265,7 +271,7 @@ export default function App() {
   // ─── PANTALLA REGISTRO ──────────────────────────────
   if (screen === "reg") return (
     <div style={{ background:`linear-gradient(135deg,${BG},#0a1628)`,minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,padding:20 }}>
-      <div style={{ maxWidth:440,width:"100%" }}>
+      <div className="reg-container">
         <button onClick={()=>setScreen("intro")} style={{ background:"none",border:"none",color:MUTED,cursor:"pointer",fontSize:13,marginBottom:16,padding:0 }}>← Volver</button>
         <h2 style={{ color:"#fff",margin:"0 0 6px",fontSize:22,fontWeight:800 }}>Accede Gratis al Reto</h2>
         <p style={{ color:MUTED,fontSize:13,margin:"0 0 20px" }}>Únete al Comando ALFA — 7 días de trading en vivo</p>

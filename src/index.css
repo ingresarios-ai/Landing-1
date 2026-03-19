@@ -144,6 +144,51 @@ body {
   }
 }
 
+/* Landing Page & Auth Screens */
+.landing-container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.landing-text {
+  text-align: center;
+}
+
+.reg-container {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .landing-container {
+    max-width: 960px;
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+  }
+  
+  .landing-text, .landing-media {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .landing-text {
+    text-align: left;
+  }
+
+  /* Make the title text larger on desktop */
+  .landing-title {
+    font-size: 56px !important;
+  }
+
+  .reg-container {
+    text-align: left;
+  }
+}
 @media (max-width: 767px) {
   .nav-header-logo {
     display: none !important;
