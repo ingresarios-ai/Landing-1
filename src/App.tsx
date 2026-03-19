@@ -378,13 +378,12 @@ export default function App() {
   if (screen === "intro") return (
     <div style={{ background:`linear-gradient(135deg,${BG},#0a1628)`,minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:FONT,padding:20 }}>
       <div className="landing-container">
-        {/* Lado Texto */}
         <div className="landing-text">
-          <div style={{ marginBottom:20 }}>
-            <div style={{ marginBottom:14 }}>
-              <img src="/logo-app.png" alt="Reto 2K a 20K Ingresarios" style={{ height: 90, objectFit: "contain" }} />
+          <div style={{ marginBottom:20, textAlign: "center" }}>
+            <div style={{ marginBottom:14, display: "flex", justifyContent: "center" }}>
+              <img src="/logo-app.png" alt="Reto 2K a 20K Ingresarios" style={{ height: 270, maxWidth: "100%", objectFit: "contain" }} />
             </div>
-            <p style={{ color:MUTED,fontSize:14,margin:0 }}>Mira el mensaje del Comando ALFA antes de unirte</p>
+            <p style={{ color:MUTED,fontSize:15,margin:0 }}>Mira el mensaje del Comando ALFA antes de unirte</p>
           </div>
 
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:20 }}>
