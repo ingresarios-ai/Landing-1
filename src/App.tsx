@@ -1,0 +1,830 @@
+import { useState, useEffect } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
+import { Home, BarChart2, BookOpen, Users, Star, Shield, TrendingUp } from "lucide-react";
+
+// ─── COLORES ───────────────────────────────────────
+const BG = "#050d1a", CARD = "rgba(255,255,255,0.04)", BORDER = "rgba(255,255,255,0.1)";
+const GREEN = "#00ff88", MUTED = "#5a7a94", FONT = "'Inter',sans-serif";
+const ADMIN_PASS = "alfa2025";
+
+// ─── HELPERS DE PAÍSES ─────────────────────────────
+const COUNTRY_DATA = {
+  MX: { flag: "🇲🇽", code: "+52" },
+  CO: { flag: "🇨🇴", code: "+57" },
+  AR: { flag: "🇦🇷", code: "+54" },
+  CL: { flag: "🇨🇱", code: "+56" },
+  PE: { flag: "🇵🇪", code: "+51" },
+  ES: { flag: "🇪🇸", code: "+34" },
+  US: { flag: "🇺🇸", code: "+1" },
+  EC: { flag: "🇪🇨", code: "+593" },
+  VE: { flag: "🇻🇪", code: "+58" },
+  UY: { flag: "🇺🇾", code: "+598" },
+  PA: { flag: "🇵🇦", code: "+507" },
+  CR: { flag: "🇨🇷", code: "+506" },
+  DO: { flag: "🇩🇴", code: "+1" },
+  GT: { flag: "🇬🇹", code: "+502" },
+  HN: { flag: "🇭🇳", code: "+504" },
+  SV: { flag: "🇸🇻", code: "+503" },
+  NI: { flag: "🇳🇮", code: "+505" },
+  BO: { flag: "🇧🇴", code: "+591" },
+  PY: { flag: "🇵🇾", code: "+595" },
+};
+
+// ─── DATOS INICIALES ───────────────────────────────
+const initOps = [
+  { id:1,dia:"D1",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5820/5830-5870/5880",res:180,nota:"Setup limpio. GENY Trend confirmó rango. Comando ALFA ejecutó perfecto.",e:"✅" },
+  { id:2,dia:"D2",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5810/5820-5860/5870",res:-120,nota:"Rompió el rango. Stop ejecutado sin hesitación. Disciplina del Comando.",e:"🛑" },
+  { id:3,dia:"D3",inst:"SPX 0DTE",tipo:"Call Spread",entry:"5835/5845",res:290,nota:"Momentum alcista claro. Sniper dio señal perfecta.",e:"✅" },
+  { id:4,dia:"D4",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5820/5830-5875/5885",res:-50,nota:"Día lateral. Salimos al 50% del max profit.",e:"⚠️" },
+  { id:5,dia:"D5",inst:"QQQ",tipo:"Put Spread",entry:"470/467",res:320,nota:"Debilidad tecnológica. Flow institucional bajista confirmó.",e:"✅" },
+  { id:6,dia:"D6",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5840/5850-5890/5900",res:410,nota:"Día perfecto. Theta decay máximo. PEDEM al 100%.",e:"🚀" },
+  { id:7,dia:"D7",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5855/5865-5905/5915",res:250,nota:"Consistencia del Comando. El proceso es el resultado.",e:"✅" },
+];
+
+const buildEquity = (ops) => {
+  let v = 2000;
+  return [{ dia:"Inicio", valor:2000 }, ...ops.map(o => { v += o.res; return { dia:o.dia, valor:v }; })];
+};
+
+const initFeed = [
+  { u:"Carlos M. 🇲🇽",t:"¡Increíble la operación del D7! 🔥",time:"hace 2h",likes:12 },
+  { u:"Ana R. 🇨🇴",t:"¿Cómo manejan el miedo después de una pérdida? Yo me bloqueo.",time:"hace 3h",likes:8 },
+  { u:"Diego F. 🇦🇷",t:"La mini clase de la Sombra me rompió la cabeza. Gracias Comando.",time:"hace 5h",likes:24 },
+];
+
+const initClases = [
+  { id:1,t:"El Flow State del Trader",sub:"¿Por qué los mejores operan 'en zona'?",dur:"4 min",xp:50,open:true,done:true,cat:"Flow" },
+  { id:2,t:"La Sombra que Sabotea",sub:"El patrón inconsciente que te hace perder",dur:"5 min",xp:75,open:true,done:true,cat:"Sombra" },
+  { id:3,t:"PEDEM en Acción",sub:"Cómo el Comando planea cada operación",dur:"3 min",xp:50,open:true,done:false,cat:"PEDEM" },
+  { id:4,t:"El Enemigo Interno",sub:"Miedo, avaricia y ego",dur:"5 min",xp:75,open:false,done:false,cat:"Sombra" },
+  { id:5,t:"Triggers de Flow",sub:"Rituales pre-mercado para estado óptimo",dur:"4 min",xp:60,open:false,done:false,cat:"Flow" },
+  { id:6,t:"Risk Management Real",sub:"Por qué el 2% no es suficiente para crecer",dur:"6 min",xp:100,open:false,done:false,cat:"PEDEM" },
+  { id:7,t:"Consistencia = Sistema",sub:"El secreto del Comando ALFA",dur:"5 min",xp:100,open:false,done:false,cat:"PEDEM" },
+];
+
+const lboard = [
+  { pos:1,n:"Carlos M.",pais:"🇲🇽",coins:1840,streak:7 },
+  { pos:2,n:"Ana R.",pais:"🇨🇴",coins:1650,streak:7 },
+  { pos:3,n:"Diego F.",pais:"🇦🇷",coins:1490,streak:6 },
+  { pos:4,n:"María L.",pais:"🇨🇱",coins:1320,streak:5 },
+  { pos:5,n:"Tú",pais:"🇨🇴",coins:1180,streak:7,yo:true },
+  { pos:6,n:"Roberto K.",pais:"🇵🇪",coins:980,streak:4 },
+];
+
+const badges = [
+  { id:1,n:"Día 1",ico:"🚀",desc:"Completaste el primer día",ok:true },
+  { id:2,n:"Primera Semana",ico:"⭐",desc:"7 días en el reto",ok:true },
+  { id:3,n:"Racha x7",ico:"🔥",desc:"7 días consecutivos activo",ok:true },
+  { id:4,n:"Guerrero del Flow",ico:"⚡",desc:"3 mini clases de Flow completadas",ok:false },
+  { id:5,n:"Detective Sombra",ico:"🔮",desc:"Completaste Sombra 1 y 2",ok:false },
+  { id:6,n:"PEDEM Master",ico:"📋",desc:"Todos los módulos PEDEM completados",ok:false },
+  { id:7,n:"20K Alcanzado",ico:"🏆",desc:"Llegaste a la meta final",ok:false },
+];
+
+// ─── HELPERS ───────────────────────────────────────
+const inp = (ph, val, set, type = "text", ico, small) => (
+  <div style={{ marginBottom: small?8:12, position:"relative" }}>
+    {ico && <span style={{ position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:14 }}>{ico}</span>}
+    <input type={type} placeholder={ph} value={val} onChange={e=>set(e.target.value)}
+      style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:ico?"11px 11px 11px 36px":"11px 12px",color:"#fff",fontSize:small?12:13,outline:"none",boxSizing:"border-box" }} />
+  </div>
+);
+
+const YTEmbed = ({ url, style }) => {
+  if (!url) return null;
+  const getID = u => { try { const m = u.match(/(?:youtu\.be\/|v=|\/embed\/)([^&?/]+)/); return m?m[1]:null; } catch { return null; }};
+  const id = getID(url);
+  if (!id) return <div style={{ ...style, display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.05)",borderRadius:12,color:MUTED,fontSize:13 }}>URL de video no válida</div>;
+  return <iframe src={`https://www.youtube.com/embed/${id}?rel=0`} style={{ ...style, border:"none",borderRadius:12 }} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+};
+
+// ─── APP PRINCIPAL ──────────────────────────────────
+export default function App() {
+  const [screen, setScreen] = useState("intro");
+  const [tab, setTab] = useState("dash");
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [wa, setWa] = useState("");
+  const [country, setCountry] = useState({ flag: "🌐", code: "" });
+  const WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/jTugwykceKyJlATOSvkb/webhook-trigger/233a5165-6ebf-4cb3-8656-de35a4e7d813";
+  const [siguiendoAlfa, setSiguiendoAlfa] = useState(false);
+  const [coins, setCoins] = useState(1180);
+  const [streak] = useState(7);
+  const [toast, setToast] = useState(null);
+  const [feed, setFeed] = useState(initFeed);
+  const [comentario, setComentario] = useState("");
+  const [share, setShare] = useState(false);
+  const [ghlStatus, setGhlStatus] = useState(null);
+  const [regErrors, setRegErrors] = useState({});
+
+  // Detectar país al cargar registro
+  useEffect(() => {
+    if (screen === "reg") {
+      fetch("https://ipapi.co/json/")
+        .then(res => res.json())
+        .then(data => {
+          const c = COUNTRY_DATA[data.country_code] || { flag: "🌐", code: "+" + data.country_calling_code };
+          setCountry(c);
+          if (!wa) setWa(c.code + " ");
+        })
+        .catch(() => setCountry({ flag: "🗺️", code: "+" }));
+    }
+  }, [screen]);
+
+  // Admin state
+  const [adminMode, setAdminMode] = useState(false);
+  const [adminPass, setAdminPass] = useState("");
+  const [adminError, setAdminError] = useState(false);
+  // Comando ALFA data (editable por admin)
+  const [alfaOps, setAlfaOps] = useState(initOps);
+  const [alfaVideoUrl, setAlfaVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  const [introVideoUrl, setIntroVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  const [alfaDia, setAlfaDia] = useState(7);
+  // Admin form
+  const [aInst, setAInst] = useState("SPX 0DTE");
+  const [aTipo, setATipo] = useState("Iron Condor");
+  const [aEntry, setAEntry] = useState("");
+  const [aRes, setARes] = useState("");
+  const [aNota, setANota] = useState("");
+  const [aVideo, setAVideo] = useState("");
+  const [aIntroVideo, setAIntroVideo] = useState("");
+
+  // Usuario: bitácora personal
+  const [userOps, setUserOps] = useState([]);
+  const [uInst, setUInst] = useState("");
+  const [uTipo, setUTipo] = useState("");
+  const [uEntry, setUEntry] = useState("");
+  const [uRes, setURes] = useState("");
+  const [uNota, setUNota] = useState("");
+  const [mostrarFormUser, setMostrarFormUser] = useState(false);
+
+  const alfaEquity = buildEquity(alfaOps);
+  const alfaPnL = alfaOps.reduce((s,o)=>s+o.res,0);
+  const alfaCuenta = 2000 + alfaPnL;
+  const alfaProgreso = Math.min(((alfaCuenta-2000)/18000)*100, 100);
+  const alfaWR = alfaOps.length ? Math.round(alfaOps.filter(o=>o.res>0).length/alfaOps.length*100) : 0;
+
+  const userEquity = buildEquity(userOps);
+  const userPnL = userOps.reduce((s,o)=>s+o.res,0);
+  const userCuenta = 2000 + userPnL;
+
+  const award = (c, msg) => { setCoins(v=>v+c); setToast(msg); setTimeout(()=>setToast(null),2500); };
+
+  const getCountry = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "Desconocido"; }};
+
+  const sendToGHL = async (tipo, extra = {}) => {
+    setGhlStatus("sending");
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo,
+          nombre,
+          email,
+          telefono: wa.replace(/\s+/g, ""),
+          fecha_registro: new Date().toISOString(),
+          pais: getCountry(),
+          tags: ["Reto2K20K", tipo === "registro" ? "NuevoLead" : "RetoCompletado"],
+          ...extra,
+        }),
+      });
+      setGhlStatus("ok");
+      setToast(tipo === "registro" ? "✅ Registro exitoso" : "🏆 Notificación enviada");
+    } catch {
+      setGhlStatus("error");
+      setToast("⚠️ Error al conectar");
+    }
+    setTimeout(() => {
+      setGhlStatus(null);
+      setToast(null);
+    }, 3000);
+  };
+
+  const addAlfaOp = () => {
+    if (!aEntry || !aRes) return;
+    const n = alfaOps.length+1;
+    const emoji = Number(aRes)>0?"✅":Number(aRes)<0?"🛑":"⚠️";
+    setAlfaOps(prev=>[...prev,{ id:n,dia:`D${n}`,inst:aInst,tipo:aTipo,entry:aEntry,res:Number(aRes),nota:aNota,e:emoji }]);
+    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n);
+    award(0, "✅ Operación registrada en la bitácora");
+  };
+
+  const addUserOp = () => {
+    if (!uRes) return;
+    const n = userOps.length+1;
+    const emoji = Number(uRes)>0?"✅":Number(uRes)<0?"🛑":"⚠️";
+    setUserOps(prev=>[...prev,{ id:n,dia:`D${n}`,inst:uInst||"SPX",tipo:uTipo||"-",entry:uEntry||"-",res:Number(uRes),nota:uNota,e:emoji }]);
+    setUInst(""); setUTipo(""); setUEntry(""); setURes(""); setUNota(""); setMostrarFormUser(false);
+    award(50, "+50 GENY Coins por registrar tu operación");
+  };
+
+  const tabs = [
+    { id:"dash",label:"Dashboard",Icon:Home },
+    { id:"bit",label:"Comando ALFA",Icon:BarChart2 },
+    { id:"mireto",label:"Mi Reto",Icon:TrendingUp },
+    { id:"clases",label:"Clases",Icon:BookOpen },
+    { id:"com",label:"Comunidad",Icon:Users },
+    { id:"perfil",label:"Perfil",Icon:Star },
+  ];
+
+  // ─── PANTALLA INTRO ────────────────────────────────
+  if (screen === "intro") return (
+    <div style={{ background:`linear-gradient(135deg,${BG},#0a1628)`,minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:FONT,padding:20 }}>
+      <div style={{ maxWidth:520,width:"100%" }}>
+        <div style={{ textAlign:"center",marginBottom:20 }}>
+          <div style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,padding:"4px 14px",marginBottom:14 }}>
+            <span style={{ color:GREEN,fontSize:11,fontWeight:700,letterSpacing:2 }}>INGRESARIOS · COMANDO ALFA</span>
+          </div>
+          <h1 style={{ color:"#fff",fontSize:44,fontWeight:900,margin:"0 0 6px",lineHeight:1 }}>RETO <span style={{ color:GREEN }}>2K→20K</span></h1>
+          <p style={{ color:MUTED,fontSize:14,margin:0 }}>Mira el mensaje del Comando ALFA antes de unirte</p>
+        </div>
+
+        <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:16,overflow:"hidden",marginBottom:20 }}>
+          <YTEmbed url={introVideoUrl} style={{ width:"100%",height:240 }} />
+        </div>
+
+        <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:20 }}>
+          {[["📅","7 Días","en vivo"],["📊","Bitácora","operación x op."],["🧠","Flow+Sombra","mini clases"]].map(([ico,v,l])=>(
+            <div key={l} style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:"12px 8px",textAlign:"center" }}>
+              <div style={{ fontSize:20,marginBottom:3 }}>{ico}</div>
+              <div style={{ color:"#fff",fontWeight:700,fontSize:12 }}>{v}</div>
+              <div style={{ color:MUTED,fontSize:11 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+
+        <button onClick={()=>setScreen("reg")}
+          style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:12,padding:"16px",color:BG,fontWeight:800,fontSize:16,cursor:"pointer" }}>
+          🚀 QUIERO UNIRME AL COMANDO ALFA — ES GRATIS
+        </button>
+      </div>
+    </div>
+  );
+
+  // ─── PANTALLA REGISTRO ──────────────────────────────
+  if (screen === "reg") return (
+    <div style={{ background:`linear-gradient(135deg,${BG},#0a1628)`,minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,padding:20 }}>
+      <div style={{ maxWidth:440,width:"100%" }}>
+        <button onClick={()=>setScreen("intro")} style={{ background:"none",border:"none",color:MUTED,cursor:"pointer",fontSize:13,marginBottom:16,padding:0 }}>← Volver</button>
+        <h2 style={{ color:"#fff",margin:"0 0 6px",fontSize:22,fontWeight:800 }}>Accede Gratis al Reto</h2>
+        <p style={{ color:MUTED,fontSize:13,margin:"0 0 20px" }}>Únete al Comando ALFA — 7 días de trading en vivo</p>
+        
+        <div style={{ marginBottom: 12 }}>
+          {inp("Tu nombre completo *",nombre,setNombre,"text","👤")}
+          {regErrors.nombre && <div style={{ color:"#ff4455",fontSize:10,marginTop:-8,marginBottom:8,marginLeft:4 }}>Este campo es obligatorio</div>}
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          {inp("Tu email *",email,setEmail,"email","📧")}
+          {regErrors.email && <div style={{ color:"#ff4455",fontSize:10,marginTop:-8,marginBottom:8,marginLeft:4 }}>Introduce un email válido</div>}
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          {inp("WhatsApp *",wa,setWa,"tel",country.flag)}
+          {regErrors.wa && <div style={{ color:"#ff4455",fontSize:10,marginTop:-8,marginBottom:8,marginLeft:4 }}>Número de contacto obligatorio</div>}
+        </div>
+
+        
+        <button onClick={()=>{ 
+          const errs = {};
+          if(!nombre) errs.nombre = true;
+          if(!email || !email.includes("@")) errs.email = true;
+          if(!wa || wa.length < 5) errs.wa = true;
+          
+          if(Object.keys(errs).length > 0) {
+            setRegErrors(errs);
+            setToast("⚠️ Por favor completa los campos obligatorios");
+            setTimeout(()=>setToast(null),3000);
+            return;
+          }
+          
+          setRegErrors({});
+          sendToGHL("registro"); 
+          setScreen("app"); 
+        }}
+          style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:10,padding:"15px",color:BG,fontWeight:800,fontSize:15,cursor:"pointer",marginTop:6 }}>
+          🎯 UNIRME AL COMANDO ALFA
+        </button>
+        <p style={{ color:MUTED,fontSize:11,textAlign:"center",margin:"10px 0 0" }}>Sin spam. Solo actualizaciones del reto.</p>
+      </div>
+    </div>
+  );
+
+  // ─── ADMIN ──────────────────────────────────────────
+  if (screen === "admin") return (
+    <div style={{ background:BG,minHeight:"100vh",fontFamily:FONT,color:"#fff",padding:20 }}>
+      <button onClick={()=>setScreen("app")} style={{ background:"none",border:"none",color:MUTED,cursor:"pointer",fontSize:13,marginBottom:20,padding:0 }}>← Volver a la App</button>
+
+      {!adminMode ? (
+        <div style={{ maxWidth:380,margin:"0 auto",paddingTop:40 }}>
+          <div style={{ textAlign:"center",marginBottom:24 }}>
+            <div style={{ fontSize:32,marginBottom:8 }}>🛡️</div>
+            <h2 style={{ margin:"0 0 4px",fontSize:20 }}>Módulo Admin</h2>
+            <p style={{ color:MUTED,fontSize:13,margin:0 }}>Acceso restringido — Comando ALFA</p>
+          </div>
+          {inp("Contraseña de administrador",adminPass,setAdminPass,"password","🔒")}
+          {adminError&&<div style={{ color:"#ff4455",fontSize:12,marginBottom:8 }}>Contraseña incorrecta</div>}
+          <button onClick={()=>{ if(adminPass===ADMIN_PASS){setAdminMode(true);setAdminError(false);}else setAdminError(true); }}
+            style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:10,padding:"14px",color:BG,fontWeight:800,fontSize:14,cursor:"pointer" }}>
+            Ingresar al Panel Admin
+          </button>
+        </div>
+      ) : (
+        <div style={{ maxWidth:660,margin:"0 auto" }}>
+          <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:24 }}>
+            <div style={{ fontSize:24 }}>🛡️</div>
+            <div><div style={{ fontWeight:800,fontSize:18 }}>Panel Admin — Comando ALFA</div><div style={{ color:MUTED,fontSize:12 }}>Día actual: {alfaDia} de 7</div></div>
+          </div>
+
+          {/* Video del día */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN }}>📹 Video del Día ({alfaDia})</div>
+            {inp("URL del video de YouTube del día",aVideo,setAVideo,"url","🔗",true)}
+            <button onClick={()=>{ if(aVideo.trim()){ setAlfaVideoUrl(aVideo); setAVideo(""); setToast("✅ Video del día actualizado"); setTimeout(()=>setToast(null),2500); }}}
+              style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
+              Actualizar Video del Día
+            </button>
+          </div>
+
+          {/* Video intro */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
+            {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
+            <button onClick={()=>{ if(aIntroVideo.trim()){ setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); }}}
+              style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
+              Actualizar Video Intro
+            </button>
+          </div>
+
+          {/* Nueva operación */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800" }}>📋 Agregar Operación a la Bitácora</div>
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
+              <div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Instrumento</div>
+                {inp("ej. SPX 0DTE",aInst,setAInst,"text",null,true)}
+              </div>
+              <div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Tipo</div>
+                {inp("ej. Iron Condor",aTipo,setATipo,"text",null,true)}
+              </div>
+              <div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Entry</div>
+                {inp("ej. 5820/5830-5870/5880",aEntry,setAEntry,"text",null,true)}
+              </div>
+              <div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Resultado P&L ($)</div>
+                {inp("ej. 350 o -120",aRes,setARes,"number",null,true)}
+              </div>
+            </div>
+            <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Nota de Juan</div>
+            <textarea value={aNota} onChange={e=>setANota(e.target.value)} placeholder="Reflexión, contexto del mercado, lección del día..."
+              style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 12px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:70,resize:"none",marginBottom:10 }} />
+            <button onClick={addAlfaOp}
+              style={{ background:"linear-gradient(135deg,#ffc800,#ff9900)",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
+              ➕ Publicar Operación — Día {alfaOps.length+1}
+            </button>
+          </div>
+
+          {/* Historial */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
+            <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>BITÁCORA PUBLICADA ({alfaOps.length} ops)</div>
+            {[...alfaOps].reverse().map(o=>(
+              <div key={o.id} style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
+                <span style={{ color:MUTED }}>{o.dia}</span>
+                <span>{o.e} {o.inst} — {o.tipo}</span>
+                <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455" }}>{o.res>0?"+":""}{o.res}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {toast && <div style={{ position:"fixed",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(0,255,136,0.95)",color:BG,padding:"10px 20px",borderRadius:99,fontWeight:700,fontSize:13,zIndex:999 }}>{toast}</div>}
+    </div>
+  );
+
+  // ─── APP PRINCIPAL ──────────────────────────────────
+  return (
+    <div className="app-layout" style={{ fontFamily:FONT,color:"#fff" }}>
+      {toast && <div style={{ position:"fixed",top:66,left:"50%",transform:"translateX(-50%)",background:"rgba(0,255,136,0.95)",color:BG,padding:"9px 18px",borderRadius:99,fontWeight:700,fontSize:12,zIndex:999,whiteSpace:"nowrap" }}>{toast}</div>}
+
+      {/* Sidebar / Bottom Nav */}
+      <nav className="main-nav">
+        <div className="nav-header-logo">
+          <div style={{ fontSize:10,color:GREEN,fontWeight:700,letterSpacing:1.5 }}>COMANDO ALFA</div>
+          <div style={{ fontSize:15,fontWeight:800 }}>RETO 2K <span style={{ color:GREEN }}>→</span> 20K</div>
+        </div>
+        {tabs.map(({id,label,Icon})=>{
+          const a=tab===id;
+          return (
+            <button key={id} onClick={()=>setTab(id)} className="nav-btn" style={{ background:a?"rgba(0,255,136,0.1)":"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"2px 8px" }}>
+              <Icon size={18} color={a?GREEN:MUTED} />
+              <span className="nav-text" style={{ fontSize:9,color:a?GREEN:MUTED,fontWeight:a?700:400 }}>{label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Main Content Area */}
+      <div className="main-content">
+        {/* Header */}
+        <div style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
+          <div className="mobile-only-header-title">
+            <div style={{ fontSize:9,color:GREEN,fontWeight:700,letterSpacing:1.5 }}>INGRESARIOS · COMANDO ALFA</div>
+            <div style={{ fontSize:14,fontWeight:800 }}>RETO 2K <span style={{ color:GREEN }}>→</span> 20K</div>
+          </div>
+          <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto" }}>
+          <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 10px",textAlign:"center" }}>
+            <div style={{ fontSize:9,color:GREEN }}>🪙 COINS</div>
+            <div style={{ fontSize:14,fontWeight:800 }}>{coins.toLocaleString()}</div>
+          </div>
+          <div style={{ background:"rgba(255,140,0,0.1)",border:"1px solid rgba(255,140,0,0.3)",borderRadius:7,padding:"4px 10px",textAlign:"center" }}>
+            <div style={{ fontSize:9,color:"#ff8c00" }}>🔥 DÍA</div>
+            <div style={{ fontSize:14,fontWeight:800 }}>{alfaDia}/7</div>
+          </div>
+          <button onClick={()=>setScreen("admin")} style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:7,padding:"7px 9px",cursor:"pointer",display:"flex",alignItems:"center" }}>
+            <Shield size={14} color={MUTED} />
+          </button>
+        </div>
+      </div>
+
+      <div style={{ padding:"16px 14px 100px",maxWidth:860,margin:"0 auto",width:"100%",boxSizing:"border-box" }}>
+
+        {/* ── DASHBOARD ── */}
+        {tab==="dash" && (
+          <div>
+            {/* Seguir al Comando ALFA */}
+            {!siguiendoAlfa ? (
+              <div style={{ background:"linear-gradient(135deg,rgba(0,255,136,0.12),rgba(0,100,255,0.08))",border:"2px solid rgba(0,255,136,0.4)",borderRadius:16,padding:18,marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center",gap:12 }}>
+                <div>
+                  <div style={{ fontWeight:800,fontSize:15,marginBottom:3 }}>⚔️ Síguenos en el Reto</div>
+                  <div style={{ color:MUTED,fontSize:12 }}>Activa las notificaciones y sigue al Comando ALFA operación por operación</div>
+                </div>
+                <button onClick={()=>{ setSiguiendoAlfa(true); award(100,"+100 GENY Coins — ¡Ya sigues al Comando ALFA!"); }}
+                  style={{ background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:10,padding:"11px 16px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer",flexShrink:0 }}>
+                  SEGUIR AL<br/>COMANDO ALFA
+                </button>
+              </div>
+            ) : (
+              <div style={{ background:"rgba(0,255,136,0.07)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:12,padding:"11px 16px",marginBottom:16,display:"flex",alignItems:"center",gap:10 }}>
+                <span style={{ fontSize:18 }}>✅</span>
+                <span style={{ color:GREEN,fontWeight:700,fontSize:13 }}>Siguiendo al Comando ALFA — recibirás notificaciones de cada operación</span>
+              </div>
+            )}
+
+            {/* Progress */}
+            <div style={{ background:"linear-gradient(135deg,rgba(0,255,136,0.08),rgba(0,100,255,0.06))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:16,padding:18,marginBottom:14 }}>
+              <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12 }}>
+                <div>
+                  <div style={{ fontSize:10,color:MUTED,marginBottom:2 }}>CUENTA COMANDO ALFA</div>
+                  <div style={{ fontSize:36,fontWeight:900,color:GREEN,lineHeight:1 }}>${alfaCuenta.toLocaleString()}</div>
+                  <div style={{ fontSize:11,color:MUTED,marginTop:2 }}>Meta: $20,000 · Inicio: $2,000</div>
+                </div>
+                <div style={{ textAlign:"right" }}>
+                  <div style={{ fontSize:10,color:MUTED,marginBottom:2 }}>PROGRESO</div>
+                  <div style={{ fontSize:30,fontWeight:900,color:GREEN }}>{alfaProgreso.toFixed(1)}%</div>
+                  <div style={{ fontSize:12,color:GREEN }}>+${alfaPnL.toLocaleString()} P&L</div>
+                </div>
+              </div>
+              <div style={{ background:"rgba(255,255,255,0.1)",borderRadius:99,height:9,overflow:"hidden" }}>
+                <div style={{ background:"linear-gradient(90deg,#00ff88,#00cc6a)",height:"100%",width:`${alfaProgreso}%`,borderRadius:99,boxShadow:"0 0 10px rgba(0,255,136,0.5)" }} />
+              </div>
+              <div style={{ display:"flex",justifyContent:"space-between",marginTop:4,fontSize:10,color:MUTED }}>
+                <span>$2K</span><span>$20K 🏆</span>
+              </div>
+            </div>
+
+            {/* Video del día */}
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,overflow:"hidden",marginBottom:14 }}>
+              <div style={{ padding:"12px 14px 10px",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+                <div>
+                  <div style={{ fontSize:10,color:GREEN,fontWeight:700 }}>📹 VIDEO DEL DÍA {alfaDia}</div>
+                  <div style={{ fontSize:14,fontWeight:700 }}>Análisis + Operación del Comando ALFA</div>
+                </div>
+                <span style={{ background:"rgba(255,200,0,0.15)",color:"#ffc800",border:"1px solid rgba(255,200,0,0.3)",borderRadius:6,padding:"2px 9px",fontSize:10,fontWeight:700 }}>LIVE</span>
+              </div>
+              <YTEmbed url={alfaVideoUrl} style={{ width:"100%",height:210 }} />
+            </div>
+
+            {/* Mini equity */}
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16,marginBottom:14 }}>
+              <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:8 }}>📈 CURVA EQUITY — COMANDO ALFA</div>
+              <ResponsiveContainer width="100%" height={130}>
+                <AreaChart data={alfaEquity}>
+                  <defs>
+                    <linearGradient id="grd" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#00ff88" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
+                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${(v/1000).toFixed(1)}K`} />
+                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Cuenta"]} />
+                  <Area type="monotone" dataKey="valor" stroke={GREEN} strokeWidth={2} fill="url(#grd)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Stats */}
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8 }}>
+              {[["OPS",alfaOps.length,"total","#fff"],["WIN",`${alfaWR}%`,`${alfaOps.filter(o=>o.res>0).length} gan.`,GREEN],["+P&L",`$${alfaPnL.toLocaleString()}`,"bruto",GREEN],["RACHA",`${streak}d`,"🔥","#ff8c00"]].map(([l,v,s,c])=>(
+                <div key={l} style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:10,padding:"11px 8px",textAlign:"center" }}>
+                  <div style={{ fontSize:9,color:MUTED,fontWeight:700,marginBottom:2 }}>{l}</div>
+                  <div style={{ fontSize:18,fontWeight:800,color:c }}>{v}</div>
+                  <div style={{ fontSize:10,color:MUTED }}>{s}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── BITÁCORA COMANDO ALFA ── */}
+        {tab==="bit" && (
+          <div>
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
+              <h2 style={{ margin:0,fontSize:18,fontWeight:800 }}>📋 Bitácora — Comando ALFA</h2>
+              <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 11px" }}>
+                <span style={{ color:GREEN,fontWeight:700,fontSize:12 }}>+${alfaPnL.toLocaleString()}</span>
+              </div>
+            </div>
+
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16,marginBottom:14 }}>
+              <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:8 }}>CURVA DE EQUITY</div>
+              <ResponsiveContainer width="100%" height={170}>
+                <AreaChart data={alfaEquity}>
+                  <defs>
+                    <linearGradient id="grd2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#00ff88" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
+                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${v.toLocaleString()}`} />
+                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Cuenta"]} />
+                  <ReferenceLine y={2000} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 4" />
+                  <Area type="monotone" dataKey="valor" stroke={GREEN} strokeWidth={2.5} fill="url(#grd2)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+              {[...alfaOps].reverse().map(o=>(
+                <div key={o.id} style={{ background:CARD,border:`1px solid ${o.res>0?"rgba(0,255,136,0.2)":"rgba(255,68,85,0.2)"}`,borderRadius:12,padding:14 }}>
+                  <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:7 }}>
+                    <div>
+                      <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:3,flexWrap:"wrap" }}>
+                        <span style={{ fontSize:14 }}>{o.e}</span>
+                        <span style={{ fontWeight:700,fontSize:13 }}>{o.inst}</span>
+                        <span style={{ background:"rgba(255,255,255,0.07)",borderRadius:4,padding:"2px 6px",fontSize:10,color:"#7a9db8" }}>{o.tipo}</span>
+                        <span style={{ background:"rgba(0,255,136,0.1)",borderRadius:4,padding:"2px 6px",fontSize:10,color:GREEN }}>{o.dia}</span>
+                      </div>
+                      <div style={{ fontSize:11,color:MUTED }}>Entry: {o.entry}</div>
+                    </div>
+                    <div style={{ fontSize:20,fontWeight:800,color:o.res>0?GREEN:"#ff4455",flexShrink:0 }}>
+                      {o.res>0?"+":""}{o.res}
+                    </div>
+                  </div>
+                  {o.nota&&<div style={{ background:"rgba(255,255,255,0.04)",borderRadius:7,padding:"8px 10px",fontSize:11,color:"#8ab0cc",fontStyle:"italic" }}>💬 "{o.nota}"</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── MI RETO (Bitácora Personal) ── */}
+        {tab==="mireto" && (
+          <div>
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
+              <div>
+                <h2 style={{ margin:"0 0 2px",fontSize:18,fontWeight:800 }}>📈 Mi Reto Personal</h2>
+                <div style={{ color:MUTED,fontSize:12 }}>Tu bitácora día a día — paralela al Comando ALFA</div>
+              </div>
+              <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 11px" }}>
+                <span style={{ color:GREEN,fontWeight:700,fontSize:12 }}>${userCuenta.toLocaleString()}</span>
+              </div>
+            </div>
+
+            {userOps.length>0 && (
+              <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16,marginBottom:14 }}>
+                <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:8 }}>MI CURVA DE EQUITY</div>
+                <ResponsiveContainer width="100%" height={150}>
+                  <AreaChart data={userEquity}>
+                    <defs>
+                      <linearGradient id="ugrd" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#4db8ff" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#4db8ff" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
+                    <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${v.toLocaleString()}`} />
+                    <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(77,184,255,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Mi Cuenta"]} />
+                    <ReferenceLine y={2000} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+                    <Area type="monotone" dataKey="valor" stroke="#4db8ff" strokeWidth={2.5} fill="url(#ugrd)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            <button onClick={()=>setMostrarFormUser(v=>!v)}
+              style={{ width:"100%",background:"linear-gradient(135deg,rgba(77,184,255,0.2),rgba(0,100,200,0.2))",border:"1px solid rgba(77,184,255,0.4)",borderRadius:12,padding:"13px",color:"#4db8ff",fontWeight:800,fontSize:14,cursor:"pointer",marginBottom:14 }}>
+              {mostrarFormUser?"✕ Cancelar":"➕ Registrar Mi Operación del Día (+50 🪙)"}
+            </button>
+
+            {mostrarFormUser && (
+              <div style={{ background:CARD,border:`1px solid rgba(77,184,255,0.3)`,borderRadius:14,padding:16,marginBottom:14 }}>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Instrumento</div>
+                    {inp("SPX, QQQ...",uInst,setUInst,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Tipo</div>
+                    {inp("Iron Condor...",uTipo,setUTipo,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Entry</div>
+                    {inp("Strikes / precio",uEntry,setUEntry,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Resultado P&L ($)*</div>
+                    {inp("ej. 200 o -80",uRes,setURes,"number",null,true)}
+                  </div>
+                </div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Mi reflexión</div>
+                <textarea value={uNota} onChange={e=>setUNota(e.target.value)} placeholder="¿Qué aprendí hoy? ¿Cómo estuvo mi estado mental?"
+                  style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"9px 11px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:60,resize:"none",marginBottom:10 }} />
+                <button onClick={addUserOp}
+                  style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
+                  Guardar Operación
+                </button>
+              </div>
+            )}
+
+            {userOps.length===0 ? (
+              <div style={{ background:CARD,border:`1px dashed rgba(255,255,255,0.1)`,borderRadius:14,padding:30,textAlign:"center" }}>
+                <div style={{ fontSize:32,marginBottom:8 }}>📋</div>
+                <div style={{ color:MUTED,fontSize:13 }}>Aún no tienes operaciones registradas.<br/>Empieza a documentar tu reto.</div>
+              </div>
+            ) : (
+              <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+                {[...userOps].reverse().map(o=>(
+                  <div key={o.id} style={{ background:CARD,border:`1px solid ${o.res>0?"rgba(77,184,255,0.25)":"rgba(255,68,85,0.2)"}`,borderRadius:12,padding:14 }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6 }}>
+                      <div>
+                        <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:3,flexWrap:"wrap" }}>
+                          <span style={{ fontSize:14 }}>{o.e}</span>
+                          <span style={{ fontWeight:700,fontSize:13 }}>{o.inst}</span>
+                          <span style={{ background:"rgba(77,184,255,0.1)",borderRadius:4,padding:"2px 6px",fontSize:10,color:"#4db8ff" }}>{o.dia}</span>
+                        </div>
+                        <div style={{ fontSize:11,color:MUTED }}>{o.tipo} · {o.entry}</div>
+                      </div>
+                      <div style={{ fontSize:20,fontWeight:800,color:o.res>0?"#4db8ff":"#ff4455",flexShrink:0 }}>
+                        {o.res>0?"+":""}{o.res}
+                      </div>
+                    </div>
+                    {o.nota&&<div style={{ background:"rgba(255,255,255,0.04)",borderRadius:7,padding:"7px 10px",fontSize:11,color:"#8ab0cc",fontStyle:"italic" }}>💬 "{o.nota}"</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── CLASES ── */}
+        {tab==="clases" && (
+          <div>
+            <h2 style={{ margin:"0 0 4px",fontSize:18,fontWeight:800 }}>🧠 Mini Clases</h2>
+            <p style={{ color:MUTED,fontSize:12,margin:"0 0 16px" }}>Se desbloquean día a día. Conocimiento que transforma traders.</p>
+            <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+              {initClases.map(c=>{
+                const catColor=c.cat==="Flow"?"#4db8ff":c.cat==="Sombra"?"#c084fc":GREEN;
+                const catBg=c.cat==="Flow"?"rgba(0,150,255,0.15)":c.cat==="Sombra"?"rgba(150,0,255,0.15)":"rgba(0,255,136,0.1)";
+                const ico=c.cat==="Flow"?"⚡":c.cat==="Sombra"?"🔮":"📋";
+                return (
+                  <div key={c.id} style={{ background:c.open?CARD:"rgba(255,255,255,0.02)",border:`1px solid ${c.done?"rgba(0,255,136,0.3)":c.open?BORDER:"rgba(255,255,255,0.05)"}`,borderRadius:13,padding:14,opacity:c.open?1:0.5 }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+                      <div style={{ display:"flex",gap:11,alignItems:"center",flex:1 }}>
+                        <div style={{ width:40,height:40,background:catBg,borderRadius:9,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>{ico}</div>
+                        <div>
+                          <div style={{ display:"flex",gap:6,alignItems:"center",marginBottom:2,flexWrap:"wrap" }}>
+                            <span style={{ fontSize:13,fontWeight:700 }}>{c.t}</span>
+                            <span style={{ background:catBg,color:catColor,borderRadius:4,padding:"1px 6px",fontSize:9,fontWeight:700 }}>{c.cat}</span>
+                          </div>
+                          <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>{c.sub}</div>
+                          <div style={{ display:"flex",gap:10,fontSize:10,color:MUTED }}>
+                            <span>⏱ {c.dur}</span><span style={{ color:"#ffc800" }}>+{c.xp} XP</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ flexShrink:0,marginLeft:8 }}>
+                        {c.done?<div style={{ width:32,height:32,background:"rgba(0,255,136,0.2)",border:"2px solid "+GREEN,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:GREEN,fontWeight:700,fontSize:14 }}>✓</div>
+                          :c.open?<div style={{ width:32,height:32,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12 }}>▶</div>
+                          :<div style={{ width:32,height:32,background:"rgba(255,255,255,0.05)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:MUTED }}>🔒</div>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── COMUNIDAD ── */}
+        {tab==="com" && (
+          <div>
+            <h2 style={{ margin:"0 0 14px",fontSize:18,fontWeight:800 }}>🏆 Leaderboard + Comunidad</h2>
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16,marginBottom:14 }}>
+              <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:10 }}>TOP PARTICIPANTES — Día {alfaDia}</div>
+              {lboard.map(p=>(
+                <div key={p.pos} style={{ display:"flex",alignItems:"center",gap:9,padding:"8px 6px",borderBottom:"1px solid rgba(255,255,255,0.05)",background:p.yo?"rgba(0,255,136,0.04)":"transparent",borderRadius:p.yo?7:0 }}>
+                  <div style={{ width:26,height:26,background:p.pos<=3?["rgba(255,215,0,0.2)","rgba(192,192,192,0.2)","rgba(205,127,50,0.2)"][p.pos-1]:"rgba(255,255,255,0.06)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:p.pos<=3?["#ffd700","#c0c0c0","#cd7f32"][p.pos-1]:MUTED,flexShrink:0 }}>
+                    {p.pos<=3?["🥇","🥈","🥉"][p.pos-1]:p.pos}
+                  </div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:p.yo?800:600,fontSize:13,color:p.yo?GREEN:"#fff" }}>{p.n} {p.pais}</div>
+                    <div style={{ fontSize:10,color:MUTED }}>🔥 {p.streak} días</div>
+                  </div>
+                  <div style={{ fontWeight:700,color:"#ffc800",fontSize:12 }}>🪙 {p.coins.toLocaleString()}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16 }}>
+              <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:10 }}>💬 FEED DE LA COMUNIDAD</div>
+              <div style={{ display:"flex",gap:7,marginBottom:12 }}>
+                <input value={comentario} onChange={e=>setComentario(e.target.value)} placeholder="Tu reflexión del día... (+25 🪙)"
+                  style={{ flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"9px 11px",color:"#fff",fontSize:12,outline:"none" }} />
+                <button onClick={()=>{ if(comentario.trim()){ setFeed(f=>[{u:`${nombre||"Tú"} 🇨🇴`,t:comentario,time:"ahora",likes:0},...f]); setComentario(""); award(25,"+25 GENY Coins por participar"); }}}
+                  style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 13px",color:BG,fontWeight:800,cursor:"pointer",fontSize:14 }}>→</button>
+              </div>
+              {feed.map((c,i)=>(
+                <div key={i} style={{ borderBottom:"1px solid rgba(255,255,255,0.05)",paddingBottom:10,marginBottom:10 }}>
+                  <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
+                    <span style={{ fontWeight:700,fontSize:12,color:GREEN }}>{c.u}</span>
+                    <span style={{ fontSize:10,color:MUTED }}>{c.time}</span>
+                  </div>
+                  <p style={{ color:"#c0d4e4",fontSize:12,margin:0,lineHeight:1.5 }}>{c.t}</p>
+                  {c.likes>0&&<div style={{ marginTop:3,fontSize:10,color:"#ffc800" }}>🪙 {c.likes} reacciones</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── PERFIL ── */}
+        {tab==="perfil" && (
+          <div>
+            <div style={{ background:"linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,100,255,0.1))",border:"1px solid rgba(0,255,136,0.2)",borderRadius:14,padding:20,marginBottom:14,textAlign:"center" }}>
+              <div style={{ width:62,height:62,background:"linear-gradient(135deg,#00ff88,#00cc6a)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 8px",fontSize:26,fontWeight:900,color:BG }}>
+                {(nombre||"T").charAt(0).toUpperCase()}
+              </div>
+              <div style={{ fontSize:18,fontWeight:800,marginBottom:2 }}>{nombre||"Trader"}</div>
+              <div style={{ fontSize:11,color:MUTED,marginBottom:12 }}>Comando ALFA · Reto 2K→20K · Día {alfaDia}</div>
+              <div style={{ display:"flex",justifyContent:"center",gap:24 }}>
+                {[["🪙",coins.toLocaleString(),"GENY Coins"],["⚡",(coins*2).toLocaleString(),"XP Total"],["🔥",streak,"Racha"]].map(([ico,v,l])=>(
+                  <div key={l}><div style={{ fontSize:18 }}>{ico}</div><div style={{ fontSize:15,fontWeight:800 }}>{v}</div><div style={{ fontSize:9,color:MUTED }}>{l}</div></div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:16,marginBottom:12 }}>
+              <div style={{ fontSize:11,color:MUTED,fontWeight:600,marginBottom:12 }}>🎖️ MIS BADGES</div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9 }}>
+                {badges.map(b=>(
+                  <div key={b.id} style={{ background:b.ok?"rgba(0,255,136,0.07)":"rgba(255,255,255,0.02)",border:`1px solid ${b.ok?"rgba(0,255,136,0.3)":"rgba(255,255,255,0.07)"}`,borderRadius:11,padding:12,opacity:b.ok?1:0.5 }}>
+                    <div style={{ fontSize:20,marginBottom:4 }}>{b.ok?b.ico:"🔒"}</div>
+                    <div style={{ fontSize:11,fontWeight:700,color:b.ok?"#fff":MUTED,marginBottom:2 }}>{b.n}</div>
+                    <div style={{ fontSize:10,color:MUTED }}>{b.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={()=>setShare(s=>!s)}
+              style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:11,padding:"14px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
+              📤 Compartir Mi Progreso en Redes
+            </button>
+
+            {share && (
+              <div style={{ marginTop:10,background:"rgba(0,255,136,0.07)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:12,padding:14 }}>
+                <div style={{ background:"linear-gradient(135deg,#050d1a,#0a1628)",border:"2px solid "+GREEN,borderRadius:12,padding:16,textAlign:"center" }}>
+                  <div style={{ fontSize:9,color:GREEN,letterSpacing:2,marginBottom:2 }}>INGRESARIOS · COMANDO ALFA</div>
+                  <div style={{ fontSize:22,fontWeight:900,marginBottom:2 }}>Día {alfaDia} de 7</div>
+                  <div style={{ fontSize:22,color:GREEN,fontWeight:800 }}>${alfaCuenta.toLocaleString()}</div>
+                  <div style={{ fontSize:12,color:MUTED,marginBottom:6 }}>{alfaProgreso.toFixed(1)}% del camino a $20K</div>
+                  <div style={{ fontSize:11,color:"#7a9db8" }}>🔥 {streak} días · 🪙 {coins.toLocaleString()} coins</div>
+                </div>
+                <div style={{ fontSize:11,color:MUTED,textAlign:"center",marginTop:8 }}>Copia y pega en Instagram · WhatsApp · TikTok</div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      </div>
+    </div>
+  );
+}
