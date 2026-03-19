@@ -100,7 +100,36 @@ const YTEmbed = ({ url, style }: { url: string; style?: React.CSSProperties }) =
 
 // ─── APP PRINCIPAL ──────────────────────────────────
 export default function App() {
-  const [screen, setScreen] = useState("intro");
+  const [screen, setScreenState] = useState(() => {
+    if (typeof window !== "undefined") {
+      const p = window.location.pathname;
+      if (p === "/admin") return "admin";
+      if (p === "/registro" || p === "/reg") return "reg";
+      if (p === "/app" || p === "/dashboard") return "app";
+    }
+    return "intro";
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const p = window.location.pathname;
+      if (p === "/admin") setScreenState("admin");
+      else if (p === "/registro" || p === "/reg") setScreenState("reg");
+      else if (p === "/app" || p === "/dashboard") setScreenState("app");
+      else setScreenState("intro");
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const setScreen = (s: string) => {
+    setScreenState(s);
+    let path = "/";
+    if (s === "admin") path = "/admin";
+    if (s === "reg") path = "/registro";
+    if (s === "app") path = "/app";
+    window.history.pushState({}, "", path);
+  };
   const [tab, setTab] = useState("dash");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
