@@ -258,7 +258,7 @@ export default function App() {
     // Optimistic UI + Insert
     const tempId = Date.now();
     setAlfaOps(prev=>[...prev,{ ...op, id: tempId }]);
-    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n<7 ? n+1 : 7);
+    setAEntry(""); setARes(""); setANota(""); setAlfaDia(n+1);
     award(0, "✅ Operación guardada localmente...");
     
     const { data } = await supabase.from("alfa_ops").insert([op]).select();
@@ -269,6 +269,13 @@ export default function App() {
       setToast("⚠️ Error guardando en Supabase");
     }
     setTimeout(()=>setToast(null),2500);
+  };
+
+  const deleteAlfaOp = async (id: any) => {
+    if (!confirm("¿Estás seguro de eliminar esta operación?")) return;
+    setAlfaOps(prev => prev.filter(o => o.id !== id));
+    award(0, "🗑️ Operación eliminada");
+    await supabase.from("alfa_ops").delete().eq("id", id);
   };
 
   const addUserOp = () => {
@@ -438,11 +445,9 @@ export default function App() {
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
             <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
               <span>📋 Agregar Operación a la Bitácora</span>
-              <div style={{ display:"flex",alignItems:"center",gap:6 }}>
-                <span style={{ fontSize:10,color:MUTED }}>Publicar en:</span>
-                <select value={alfaDia} onChange={(e)=>setAlfaDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"none",borderRadius:4,padding:"2px 4px",fontSize:11,outline:"none" }}>
-                  {[1,2,3,4,5,6,7].map(d => <option key={d} value={d}>Día {d}</option>)}
-                </select>
+              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
+                <input type="number" value={alfaDia} onChange={(e)=>setAlfaDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
               </div>
             </div>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
@@ -476,10 +481,11 @@ export default function App() {
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
             <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>BITÁCORA PUBLICADA ({alfaOps.length} ops)</div>
             {[...alfaOps].reverse().map(o=>(
-              <div key={o.id} style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
-                <span style={{ color:MUTED }}>{o.dia}</span>
-                <span>{o.e} {o.inst} — {o.tipo}</span>
-                <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455" }}>{o.res>0?"+":""}{o.res}</span>
+              <div key={o.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
+                <span style={{ color:MUTED, width:40 }}>{o.dia}</span>
+                <span style={{ flex:1 }}>{o.e} {o.inst} — {o.tipo}</span>
+                <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455", width:60, textAlign:"right" }}>{o.res>0?"+":""}{o.res}</span>
+                <button onClick={() => deleteAlfaOp(o.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar operación">🗑️</button>
               </div>
             ))}
           </div>
