@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
 import { Home, BarChart2, BookOpen, Users, Star, Shield, TrendingUp } from "lucide-react";
 
 // ─── COLORES ───────────────────────────────────────
@@ -8,7 +8,7 @@ const GREEN = "#00ff88", MUTED = "#5a7a94", FONT = "'Inter',sans-serif";
 const ADMIN_PASS = "alfa2025";
 
 // ─── HELPERS DE PAÍSES ─────────────────────────────
-const COUNTRY_DATA = {
+const COUNTRY_DATA: Record<string, { flag: string; code: string }> = {
   MX: { flag: "🇲🇽", code: "+52" },
   CO: { flag: "🇨🇴", code: "+57" },
   AR: { flag: "🇦🇷", code: "+54" },
@@ -41,9 +41,9 @@ const initOps = [
   { id:7,dia:"D7",inst:"SPX 0DTE",tipo:"Iron Condor",entry:"5855/5865-5905/5915",res:250,nota:"Consistencia del Comando. El proceso es el resultado.",e:"✅" },
 ];
 
-const buildEquity = (ops) => {
+const buildEquity = (ops: any[]) => {
   let v = 2000;
-  return [{ dia:"Inicio", valor:2000 }, ...ops.map(o => { v += o.res; return { dia:o.dia, valor:v }; })];
+  return [{ dia:"Inicio", valor:2000 }, ...ops.map((o: any) => { v += o.res; return { dia:o.dia, valor:v }; })];
 };
 
 const initFeed = [
@@ -82,7 +82,7 @@ const badges = [
 ];
 
 // ─── HELPERS ───────────────────────────────────────
-const inp = (ph, val, set, type = "text", ico, small) => (
+const inp = (ph: string, val: string, set: (v: string) => void, type = "text", ico?: string | null, small?: boolean) => (
   <div style={{ marginBottom: small?8:12, position:"relative" }}>
     {ico && <span style={{ position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:14 }}>{ico}</span>}
     <input type={type} placeholder={ph} value={val} onChange={e=>set(e.target.value)}
@@ -90,9 +90,9 @@ const inp = (ph, val, set, type = "text", ico, small) => (
   </div>
 );
 
-const YTEmbed = ({ url, style }) => {
+const YTEmbed = ({ url, style }: { url: string; style?: React.CSSProperties }) => {
   if (!url) return null;
-  const getID = u => { try { const m = u.match(/(?:youtu\.be\/|v=|\/embed\/)([^&?/]+)/); return m?m[1]:null; } catch { return null; }};
+  const getID = (u: string) => { try { const m = u.match(/(?:youtu\.be\/|v=|\/embed\/)([^&?/]+)/); return m?m[1]:null; } catch { return null; }};
   const id = getID(url);
   if (!id) return <div style={{ ...style, display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.05)",borderRadius:12,color:MUTED,fontSize:13 }}>URL de video no válida</div>;
   return <iframe src={`https://www.youtube.com/embed/${id}?rel=0`} style={{ ...style, border:"none",borderRadius:12 }} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
@@ -110,12 +110,12 @@ export default function App() {
   const [siguiendoAlfa, setSiguiendoAlfa] = useState(false);
   const [coins, setCoins] = useState(1180);
   const [streak] = useState(7);
-  const [toast, setToast] = useState(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [feed, setFeed] = useState(initFeed);
   const [comentario, setComentario] = useState("");
   const [share, setShare] = useState(false);
-  const [ghlStatus, setGhlStatus] = useState(null);
-  const [regErrors, setRegErrors] = useState({});
+  const [, setGhlStatus] = useState<string | null>(null);
+  const [regErrors, setRegErrors] = useState<any>({});
 
   // Detectar país al cargar registro
   useEffect(() => {
@@ -150,7 +150,7 @@ export default function App() {
   const [aIntroVideo, setAIntroVideo] = useState("");
 
   // Usuario: bitácora personal
-  const [userOps, setUserOps] = useState([]);
+  const [userOps, setUserOps] = useState<any[]>([]);
   const [uInst, setUInst] = useState("");
   const [uTipo, setUTipo] = useState("");
   const [uEntry, setUEntry] = useState("");
@@ -162,17 +162,17 @@ export default function App() {
   const alfaPnL = alfaOps.reduce((s,o)=>s+o.res,0);
   const alfaCuenta = 2000 + alfaPnL;
   const alfaProgreso = Math.min(((alfaCuenta-2000)/18000)*100, 100);
-  const alfaWR = alfaOps.length ? Math.round(alfaOps.filter(o=>o.res>0).length/alfaOps.length*100) : 0;
+  const alfaWR = alfaOps.length ? Math.round(alfaOps.filter((o: any)=>o.res>0).length/alfaOps.length*100) : 0;
 
   const userEquity = buildEquity(userOps);
-  const userPnL = userOps.reduce((s,o)=>s+o.res,0);
+  const userPnL = userOps.reduce((s,o: any)=>s+o.res,0);
   const userCuenta = 2000 + userPnL;
 
-  const award = (c, msg) => { setCoins(v=>v+c); setToast(msg); setTimeout(()=>setToast(null),2500); };
+  const award = (c: number, msg: string) => { setCoins(v=>v+c); setToast(msg); setTimeout(()=>setToast(null),2500); };
 
   const getCountry = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "Desconocido"; }};
 
-  const sendToGHL = async (tipo, extra = {}) => {
+  const sendToGHL = async (tipo: string, extra: any = {}) => {
     setGhlStatus("sending");
     try {
       await fetch(WEBHOOK_URL, {
@@ -287,7 +287,7 @@ export default function App() {
 
         
         <button onClick={()=>{ 
-          const errs = {};
+          const errs: any = {};
           if(!nombre) errs.nombre = true;
           if(!email || !email.includes("@")) errs.email = true;
           if(!wa || wa.length < 5) errs.wa = true;
@@ -520,8 +520,8 @@ export default function App() {
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                   <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
-                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${(v/1000).toFixed(1)}K`} />
-                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Cuenta"]} />
+                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={(v:number)=>`$${(v/1000).toFixed(1)}K`} />
+                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={(v:any)=>[`$${Number(v).toLocaleString()}`,"Cuenta"]} />
                   <Area type="monotone" dataKey="valor" stroke={GREEN} strokeWidth={2} fill="url(#grd)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -531,9 +531,9 @@ export default function App() {
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8 }}>
               {[["OPS",alfaOps.length,"total","#fff"],["WIN",`${alfaWR}%`,`${alfaOps.filter(o=>o.res>0).length} gan.`,GREEN],["+P&L",`$${alfaPnL.toLocaleString()}`,"bruto",GREEN],["RACHA",`${streak}d`,"🔥","#ff8c00"]].map(([l,v,s,c])=>(
                 <div key={l} style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:10,padding:"11px 8px",textAlign:"center" }}>
-                  <div style={{ fontSize:9,color:MUTED,fontWeight:700,marginBottom:2 }}>{l}</div>
-                  <div style={{ fontSize:18,fontWeight:800,color:c }}>{v}</div>
-                  <div style={{ fontSize:10,color:MUTED }}>{s}</div>
+                  <div style={{ fontSize:9,color:MUTED,fontWeight:700,marginBottom:2 }}>{l as string}</div>
+                  <div style={{ fontSize:18,fontWeight:800,color:c as string }}>{v as React.ReactNode}</div>
+                  <div style={{ fontSize:10,color:MUTED }}>{s as string}</div>
                 </div>
               ))}
             </div>
@@ -562,8 +562,8 @@ export default function App() {
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                   <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
-                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${v.toLocaleString()}`} />
-                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Cuenta"]} />
+                  <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={(v:number)=>`$${v.toLocaleString()}`} />
+                  <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(0,255,136,0.3)",borderRadius:8,fontSize:12 }} formatter={(v:any)=>[`$${Number(v).toLocaleString()}`,"Cuenta"]} />
                   <ReferenceLine y={2000} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 4" />
                   <Area type="monotone" dataKey="valor" stroke={GREEN} strokeWidth={2.5} fill="url(#grd2)" />
                 </AreaChart>
@@ -571,7 +571,7 @@ export default function App() {
             </div>
 
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-              {[...alfaOps].reverse().map(o=>(
+              {[...alfaOps].reverse().map((o: any)=>(
                 <div key={o.id} style={{ background:CARD,border:`1px solid ${o.res>0?"rgba(0,255,136,0.2)":"rgba(255,68,85,0.2)"}`,borderRadius:12,padding:14 }}>
                   <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:7 }}>
                     <div>
@@ -620,8 +620,8 @@ export default function App() {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="dia" tick={{ fill:MUTED,fontSize:9 }} />
-                    <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={v=>`$${v.toLocaleString()}`} />
-                    <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(77,184,255,0.3)",borderRadius:8,fontSize:12 }} formatter={v=>[`$${v.toLocaleString()}`,"Mi Cuenta"]} />
+                    <YAxis tick={{ fill:MUTED,fontSize:9 }} tickFormatter={(v:number)=>`$${v.toLocaleString()}`} />
+                    <Tooltip contentStyle={{ background:"#0a1628",border:"1px solid rgba(77,184,255,0.3)",borderRadius:8,fontSize:12 }} formatter={(v:any)=>[`$${Number(v).toLocaleString()}`,"Mi Cuenta"]} />
                     <ReferenceLine y={2000} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
                     <Area type="monotone" dataKey="valor" stroke="#4db8ff" strokeWidth={2.5} fill="url(#ugrd)" />
                   </AreaChart>
@@ -671,7 +671,7 @@ export default function App() {
               </div>
             ) : (
               <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                {[...userOps].reverse().map(o=>(
+                {[...userOps].reverse().map((o:any)=>(
                   <div key={o.id} style={{ background:CARD,border:`1px solid ${o.res>0?"rgba(77,184,255,0.25)":"rgba(255,68,85,0.2)"}`,borderRadius:12,padding:14 }}>
                     <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6 }}>
                       <div>
