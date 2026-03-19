@@ -165,6 +165,7 @@ export default function App() {
   // Comando ALFA data (editable por admin)
   const [alfaOps, setAlfaOps] = useState<any[]>([]);
   const [alfaVideos, setAlfaVideos] = useState<any[]>([]);
+  const [alfaUsers, setAlfaUsers] = useState<any[]>([]);
   const [alfaVideoUrl, setAlfaVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [introVideoUrl, setIntroVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [alfaDia, setAlfaDia] = useState(1);
@@ -195,6 +196,9 @@ export default function App() {
         setAlfaOps(ops);
         if (ops.length > 0) setAlfaDia(Number(ops[ops.length - 1].dia.replace("D","")) + 1);
       }
+      // Usuarios registrados
+      const { data: users } = await supabase.from("alfa_users").select("*").order("created_at", { ascending: false });
+      if (users) setAlfaUsers(users);
     };
     fetchData();
   }, []);
@@ -247,6 +251,11 @@ export default function App() {
           ...extra,
         }),
       });
+      if (tipo === "registro") {
+        const u = { nombre, email, telefono: wa.replace(/\s+/g, ""), pais: getCountry() };
+        await supabase.from("alfa_users").insert([u]);
+        setAlfaUsers(prev => [u, ...prev]);
+      }
       setGhlStatus("ok");
       setToast(tipo === "registro" ? "✅ Registro exitoso" : "🏆 Notificación enviada");
     } catch {
@@ -480,6 +489,21 @@ export default function App() {
             <div><div style={{ fontWeight:800,fontSize:18 }}>Panel Admin — Comando ALFA</div><div style={{ color:MUTED,fontSize:12 }}>Día actual: {alfaDia} de 7</div></div>
           </div>
 
+          {/* Video intro */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
+            {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
+            <button onClick={async ()=>{ 
+              if(aIntroVideo.trim()){ 
+                setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
+                await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
+                setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
+              }}}
+              style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
+              Actualizar Video Intro
+            </button>
+          </div>
+
           {/* Video del día */}
           <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
             <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN,display:"flex",alignItems:"center",justifyContent:"space-between" }}>
@@ -505,21 +529,6 @@ export default function App() {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Video intro */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
-            {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
-            <button onClick={async ()=>{ 
-              if(aIntroVideo.trim()){ 
-                setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
-                await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
-                setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
-              }}}
-              style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
-              Actualizar Video Intro
-            </button>
           </div>
 
           {/* Nueva operación */}
@@ -558,8 +567,8 @@ export default function App() {
             </button>
           </div>
 
-          {/* Historial */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
+          {/* Historial Operaciones */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
             <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>BITÁCORA PUBLICADA ({alfaOps.length} ops)</div>
             {[...alfaOps].reverse().map(o=>(
               <div key={o.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
@@ -568,6 +577,18 @@ export default function App() {
                 <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455", width:60, textAlign:"right" }}>{o.res>0?"+":""}{o.res}</span>
                 <button onClick={() => editOp(o)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar operación">✏️</button>
                 <button onClick={() => deleteAlfaOp(o.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar operación">🗑️</button>
+              </div>
+            ))}
+          </div>
+
+          {/* Historial Usuarios */}
+          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
+            <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>USUARIOS REGISTRADOS ({alfaUsers.length} leads)</div>
+            {[...alfaUsers].map((u, i)=>(
+              <div key={u.id || i} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:12 }}>
+                <span style={{ flex:1.5, fontWeight:700, color:"#fff" }}>{u.nombre}</span>
+                <span style={{ flex:2, color:MUTED, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</span>
+                <span style={{ flex:1, color:"#4db8ff", textAlign:"right" }}>{u.telefono}</span>
               </div>
             ))}
           </div>
