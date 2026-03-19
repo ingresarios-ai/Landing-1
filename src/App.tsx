@@ -419,7 +419,7 @@ export default function App() {
       <div className="reg-container">
         <button onClick={()=>setScreen("intro")} style={{ background:"none",border:"none",color:MUTED,cursor:"pointer",fontSize:13,marginBottom:16,padding:0 }}>← Volver</button>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 60, objectFit: "contain" }} />
+          <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 120, objectFit: "contain" }} />
         </div>
         <h2 style={{ color:"#fff",margin:"0 0 6px",fontSize:22,fontWeight:800 }}>Accede Gratis al Reto</h2>
         <p style={{ color:MUTED,fontSize:13,margin:"0 0 20px" }}>Únete al Comando ALFA — 7 días de trading en vivo</p>
@@ -608,7 +608,7 @@ export default function App() {
       {/* Sidebar / Bottom Nav */}
       <nav className="main-nav">
         <div className="nav-header-logo" style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-          <img src="/logo-app.png" alt="Reto 2K a 20K Ingresarios" style={{ height: 48, objectFit: "contain" }} />
+          <img src="/logo-app.png" alt="Reto 2K a 20K Ingresarios" style={{ height: 96, maxWidth: "100%", objectFit: "contain" }} />
         </div>
         {tabs.map(({id,label,Icon})=>{
           const a=tab===id;
@@ -624,11 +624,11 @@ export default function App() {
       {/* Main Content Area */}
       <div className="main-content">
         {/* Header */}
-        <div style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
-          <div className="mobile-only-header-title" style={{ display: "flex", alignItems: "center" }}>
-            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 32, objectFit: "contain" }} />
+        <div style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
+          <div className="mobile-only-header-title" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center" }}>
+            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 64, objectFit: "contain" }} />
           </div>
-          <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto" }}>
+          <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto",position:"relative",zIndex:10 }}>
           <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 10px",textAlign:"center" }}>
             <div style={{ fontSize:9,color:GREEN }}>🪙 COINS</div>
             <div style={{ fontSize:14,fontWeight:800 }}>{coins.toLocaleString()}</div>
