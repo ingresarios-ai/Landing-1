@@ -697,7 +697,7 @@ export default function App() {
                 <div className="segment-label-premium">MIN</div>
               </div>
               <div className="countdown-segment-premium">
-                <div className="segment-value-premium">{cdSecs < 10 ? `0${cdSecs}` : cdSecs}</div>
+                <div className="segment-value-premium beat-animation">{cdSecs < 10 ? `0${cdSecs}` : cdSecs}</div>
                 <div className="segment-label-premium">SEG</div>
               </div>
             </div>
