@@ -163,7 +163,6 @@ export default function App() {
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState(false);
   // Comando ALFA data (editable por admin)
-  const [reminderSet, setReminderSet] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState(Math.max(0, TARGET_DATE - Date.now()));
 
@@ -178,11 +177,6 @@ export default function App() {
   const cdHours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
   const cdMins = Math.floor((timeLeft / 1000 / 60) % 60);
   const cdSecs = Math.floor((timeLeft / 1000) % 60);
-
-  const handleReminder = () => {
-    setReminderSet(true);
-    setTimeout(() => setReminderSet(false), 5000);
-  };
 
   // Comando ALFA data (editable por admin)
   const [alfaOps, setAlfaOps] = useState<any[]>([]);
@@ -703,10 +697,6 @@ export default function App() {
                 <div className="segment-label-premium">SEG</div>
               </div>
             </div>
-
-            <button className="cta-button-premium" onClick={handleReminder}>
-              {reminderSet ? "¡RECORDATORIO FIJADO!" : "AVÍSAME CUANDO COMIENCE EL RETO"}
-            </button>
           </div>
         </div>
 
