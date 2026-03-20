@@ -80,6 +80,16 @@ body {
   min-width: 0;
 }
 
+.main-header {
+  padding: 30px 14px 10px;
+}
+
+@media (min-width: 768px) {
+  .main-header {
+    padding: 16px 14px;
+  }
+}
+
 .main-nav {
   position: fixed;
   bottom: 0;

@@ -652,7 +652,7 @@ export default function App() {
       {/* Main Content Area */}
       <div className="main-content">
         {/* Header */}
-        <div style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
+        <div className="main-header" style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
           <div className="mobile-only-header-title" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center" }}>
             <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 64, objectFit: "contain" }} />
           </div>
