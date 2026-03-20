@@ -216,16 +216,18 @@ body {
   .playlist-wrapper {
     flex-direction: row;
     align-items: stretch;
+    height: 420px; /* Fixed height stops overflow bugs in flex children */
   }
   
   .playlist-video {
-    flex: 3; /* Give more space to video */
-    height: auto !important; /* Let aspect-ratio handle it */
-    min-height: 400px;
+    flex: 3; 
+    height: 100% !important;
+    aspect-ratio: auto; /* Let the fixed height dictate */
   }
   
   .playlist-list {
     flex: 1.2;
+    height: 100% !important;
     max-height: 100% !important;
     border-top: none !important;
     border-left: 1px solid rgba(255,255,255,0.08);
