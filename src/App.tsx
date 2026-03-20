@@ -12,6 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const BG = "#050d1a", CARD = "rgba(255,255,255,0.04)", BORDER = "rgba(255,255,255,0.1)";
 const GREEN = "#00ff88", MUTED = "#5a7a94", FONT = "'Inter',sans-serif";
 const ADMIN_PASS = "alfa2025";
+const TARGET_DATE = new Date("2026-04-20T18:00:00-05:00").getTime();
 
 // ─── HELPERS DE PAÍSES ─────────────────────────────
 const COUNTRY_DATA: Record<string, { flag: string; code: string }> = {
@@ -162,6 +163,22 @@ export default function App() {
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState(false);
   // Comando ALFA data (editable por admin)
+
+
+  const [timeLeft, setTimeLeft] = useState(Math.max(0, TARGET_DATE - Date.now()));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(Math.max(0, TARGET_DATE - Date.now()));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const cdDays = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const cdHours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+  const cdMins = Math.floor((timeLeft / 1000 / 60) % 60);
+  const cdSecs = Math.floor((timeLeft / 1000) % 60);
+
   // Comando ALFA data (editable por admin)
   const [alfaOps, setAlfaOps] = useState<any[]>([]);
   const [alfaVideos, setAlfaVideos] = useState<any[]>([]);
@@ -653,14 +670,19 @@ export default function App() {
       <div className="main-content">
         {/* Header */}
         <div className="main-header" style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
-          <div className="mobile-only-header-title" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center" }}>
-            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 64, objectFit: "contain" }} />
+          <div className="mobile-only-header-title" style={{ display: "flex", alignItems: "center" }}>
+            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 48, objectFit: "contain" }} />
           </div>
-          <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto",position:"relative",zIndex:10 }}>
-
-
+          <div style={{ display:"flex",flexDirection:"column",alignItems:"flex-end",marginLeft:"auto" }}>
+            <div style={{ fontSize: 9, color: MUTED, textTransform: "uppercase", fontWeight: 700, letterSpacing: 0.5, marginBottom:4 }}>Comenzamos el reto en:</div>
+            <div style={{ display: "flex", gap: 6 }}>
+               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdDays}d</div>
+               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdHours}h</div>
+               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdMins}m</div>
+               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdSecs}s</div>
+            </div>
+          </div>
         </div>
-      </div>
 
       <div style={{ padding:"16px 14px 100px", maxWidth:1080, margin:"0 auto", width:"100%", boxSizing:"border-box" }}>
 
