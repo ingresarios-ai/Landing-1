@@ -669,17 +669,17 @@ export default function App() {
       {/* Main Content Area */}
       <div className="main-content">
         {/* Header */}
-        <div className="main-header" style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100 }}>
-          <div className="mobile-only-header-title" style={{ display: "flex", alignItems: "center" }}>
-            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 48, objectFit: "contain" }} />
+        <div className="main-header" style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",position:"sticky",top:0,zIndex:100 }}>
+          <div className="mobile-only-header-title">
+            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 80, objectFit: "contain" }} />
           </div>
-          <div style={{ display:"flex",flexDirection:"column",alignItems:"flex-end",marginLeft:"auto" }}>
-            <div style={{ fontSize: 9, color: MUTED, textTransform: "uppercase", fontWeight: 700, letterSpacing: 0.5, marginBottom:4 }}>Comenzamos el reto en:</div>
-            <div style={{ display: "flex", gap: 6 }}>
-               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdDays}d</div>
-               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdHours}h</div>
-               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdMins}m</div>
-               <div style={{ background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.25)", borderRadius: 6, padding: "4px 8px", color: GREEN, fontSize: 13, fontWeight: 800, minWidth:26, textAlign:"center" }}>{cdSecs}s</div>
+          <div className="premium-countdown-container">
+            <div className="premium-countdown-title">Comenzamos el reto en:</div>
+            <div className="premium-countdown-boxes">
+               <div className="countdown-box"><span className="countdown-value">{cdDays}</span><span className="countdown-label">DÍAS</span></div>
+               <div className="countdown-box"><span className="countdown-value">{cdHours}</span><span className="countdown-label">HRS</span></div>
+               <div className="countdown-box"><span className="countdown-value">{cdMins}</span><span className="countdown-label">MIN</span></div>
+               <div className="countdown-box"><span className="countdown-value">{cdSecs}</span><span className="countdown-label">SEG</span></div>
             </div>
           </div>
         </div>

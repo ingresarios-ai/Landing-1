@@ -81,12 +81,74 @@ body {
 }
 
 .main-header {
-  padding: 45px 14px 25px;
+  padding: 16px 14px 16px;
+  display: flex;
+  flex-direction: column; /* mobile default is column to allow large items */
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.premium-countdown-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.premium-countdown-title {
+  font-size: 13px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+.premium-countdown-boxes {
+  display: flex;
+  gap: 10px;
+}
+
+.countdown-box {
+  background: linear-gradient(145deg, rgba(0,255,136,0.1) 0%, rgba(0,100,255,0.05) 100%);
+  border: 1px solid rgba(0,255,136,0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+}
+
+.countdown-value {
+  color: #00ff88;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(0,255,136,0.6);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.countdown-label {
+  color: #5a7a94;
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
 }
 
 @media (min-width: 768px) {
   .main-header {
-    padding: 16px 14px;
+    padding: 16px 24px;
+    flex-direction: row;
+    justify-content: flex-end; /* since logo is on sidebar for desktop */
+  }
+  .premium-countdown-container {
+    align-items: flex-end;
   }
 }
 
