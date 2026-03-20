@@ -210,6 +210,7 @@ export default function App() {
   const [aNota, setANota] = useState("");
   const [aVideo, setAVideo] = useState("");
   const [aIntroVideo, setAIntroVideo] = useState("");
+  const [adminTab, setAdminTab] = useState("video-dia"); // 'intro', 'video-dia', 'bitacora', 'users'
 
   // Usuario: bitácora personal
   const [userOps, setUserOps] = useState<any[]>([]);
@@ -490,109 +491,139 @@ export default function App() {
             <div><div style={{ fontWeight:800,fontSize:18 }}>Panel Admin — Comando ALFA</div><div style={{ color:MUTED,fontSize:12 }}>Día actual: {alfaDia} de 7</div></div>
           </div>
 
-          {/* Video intro */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
-            {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
-            <button onClick={async ()=>{ 
-              if(aIntroVideo.trim()){ 
-                setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
-                await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
-                setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
-              }}}
-              style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
-              Actualizar Video Intro
-            </button>
+          {/* Menu de Tabs Admin */}
+          <div style={{ display:"flex", gap:10, marginBottom:20, overflowX:"auto", paddingBottom:8, WebkitOverflowScrolling:"touch" }}>
+            {[
+              { id:"video-dia", label:"📹 Video del Día" },
+              { id:"bitacora", label:"📋 Bitácora" },
+              { id:"users", label:"👥 Usuarios Registrados" },
+              { id:"intro", label:"🎬 Video Intro" }
+            ].map(t => (
+               <button key={t.id} onClick={()=>setAdminTab(t.id)}
+                 style={{ 
+                   background: adminTab===t.id ? "rgba(0,255,136,0.15)" : "rgba(255,255,255,0.05)",
+                   border: `1px solid ${adminTab===t.id ? GREEN : "rgba(255,255,255,0.1)"}`,
+                   color: adminTab===t.id ? GREEN : MUTED,
+                   borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                   whiteSpace: "nowrap", transition: "all 0.2s", flexShrink: 0
+                 }}>
+                 {t.label}
+               </button>
+            ))}
           </div>
 
-          {/* Video del día */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN,display:"flex",alignItems:"center",justifyContent:"space-between" }}>
-              <span>📹 Publicar Video del Día</span>
-              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-                <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
-                <input type="number" value={aVideoDia} onChange={(e)=>setAVideoDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
+          {/* TAB: Intro */}
+          {adminTab === "intro" && (
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+              <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#4db8ff" }}>🎬 Video de Presentación (Intro)</div>
+              {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
+              <button onClick={async ()=>{ 
+                if(aIntroVideo.trim()){ 
+                  setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
+                  await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
+                  setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
+                }}}
+                style={{ background:"#4db8ff",border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer" }}>
+                Actualizar Video Intro
+              </button>
+            </div>
+          )}
+
+          {/* TAB: Video del Día */}
+          {adminTab === "video-dia" && (
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+              <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:GREEN,display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+                <span>📹 Publicar Video del Día</span>
+                <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                  <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
+                  <input type="number" value={aVideoDia} onChange={(e)=>setAVideoDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
+                </div>
+              </div>
+              {inp("URL del video de YouTube",aVideo,setAVideo,"url","🔗",true)}
+              <button onClick={addAlfaVideo}
+                style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:16 }}>
+                {editingVideoId ? "💾 Guardar Cambios" : "➕ Publicar Video"}
+              </button>
+              <div style={{ borderTop:`1px solid ${BORDER}`,paddingTop:12 }}>
+                <div style={{ fontWeight:700,fontSize:13,marginBottom:8,color:MUTED }}>VIDEOS PUBLICADOS ({alfaVideos.length})</div>
+                {[...alfaVideos].reverse().map(v=>(
+                  <div key={v.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
+                    <span style={{ color:MUTED, width:60, fontWeight:700 }}>Día {v.dia}</span>
+                    <span style={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color:GREEN }}>{v.url}</span>
+                    <button onClick={() => editVideo(v)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar video">✏️</button>
+                    <button onClick={() => deleteAlfaVideo(v.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar video">🗑️</button>
+                  </div>
+                ))}
               </div>
             </div>
-            {inp("URL del video de YouTube",aVideo,setAVideo,"url","🔗",true)}
-            <button onClick={addAlfaVideo}
-              style={{ background:GREEN,border:"none",borderRadius:8,padding:"9px 18px",color:BG,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:16 }}>
-              {editingVideoId ? "💾 Guardar Cambios" : "➕ Publicar Video"}
-            </button>
-            <div style={{ borderTop:`1px solid ${BORDER}`,paddingTop:12 }}>
-              <div style={{ fontWeight:700,fontSize:13,marginBottom:8,color:MUTED }}>VIDEOS PUBLICADOS ({alfaVideos.length})</div>
-              {[...alfaVideos].reverse().map(v=>(
-                <div key={v.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
-                  <span style={{ color:MUTED, width:60, fontWeight:700 }}>Día {v.dia}</span>
-                  <span style={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color:GREEN }}>{v.url}</span>
-                  <button onClick={() => editVideo(v)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar video">✏️</button>
-                  <button onClick={() => deleteAlfaVideo(v.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar video">🗑️</button>
+          )}
+
+          {/* TAB: Bitácora */}
+          {adminTab === "bitacora" && (
+            <>
+              <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+                <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+                  <span>📋 Agregar Operación a la Bitácora</span>
+                  <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                    <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
+                    <input type="number" value={alfaDia} onChange={(e)=>setAlfaDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
+                  </div>
+                </div>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Instrumento</div>
+                    {inp("ej. SPX 0DTE",aInst,setAInst,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Tipo</div>
+                    {inp("ej. Iron Condor",aTipo,setATipo,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Entry</div>
+                    {inp("ej. 5820/5830-5870/5880",aEntry,setAEntry,"text",null,true)}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Resultado P&L ($)</div>
+                    {inp("ej. 350 o -120",aRes,setARes,"number",null,true)}
+                  </div>
+                </div>
+                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Nota de Juan</div>
+                <textarea value={aNota} onChange={e=>setANota(e.target.value)} placeholder="Reflexión, contexto del mercado, lección del día..."
+                  style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 12px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:70,resize:"none",marginBottom:10 }} />
+                <button onClick={addAlfaOp}
+                  style={{ background:"linear-gradient(135deg,#ffc800,#ff9900)",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
+                  {editingOpId ? "💾 Guardar Cambios" : "➕ Publicar Operación"}
+                </button>
+              </div>
+
+              <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
+                <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>BITÁCORA PUBLICADA ({alfaOps.length} ops)</div>
+                {[...alfaOps].reverse().map(o=>(
+                  <div key={o.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
+                    <span style={{ color:MUTED, width:40 }}>{o.dia}</span>
+                    <span style={{ flex:1 }}>{o.e} {o.inst} — {o.tipo}</span>
+                    <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455", width:60, textAlign:"right" }}>{o.res>0?"+":""}{o.res}</span>
+                    <button onClick={() => editOp(o)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar operación">✏️</button>
+                    <button onClick={() => deleteAlfaOp(o.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar operación">🗑️</button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* TAB: Usuarios */}
+          {adminTab === "users" && (
+            <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
+              <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>USUARIOS REGISTRADOS ({alfaUsers.length} leads)</div>
+              {[...alfaUsers].map((u, i)=>(
+                <div key={u.id || i} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:12 }}>
+                  <span style={{ flex:1.5, fontWeight:700, color:"#fff" }}>{u.nombre}</span>
+                  <span style={{ flex:2, color:MUTED, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</span>
+                  <span style={{ flex:1, color:"#4db8ff", textAlign:"right" }}>{u.telefono}</span>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Nueva operación */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:14,marginBottom:12,color:"#ffc800",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
-              <span>📋 Agregar Operación a la Bitácora</span>
-              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-                <span style={{ fontSize:12,color:MUTED,fontWeight:700 }}>Día:</span>
-                <input type="number" value={alfaDia} onChange={(e)=>setAlfaDia(Number(e.target.value))} style={{ background:"rgba(255,255,255,0.1)",color:"#fff",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 12px",fontSize:14,fontWeight:800,outline:"none",width:70,textAlign:"center" }} />
-              </div>
-            </div>
-            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8 }}>
-              <div>
-                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Instrumento</div>
-                {inp("ej. SPX 0DTE",aInst,setAInst,"text",null,true)}
-              </div>
-              <div>
-                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Tipo</div>
-                {inp("ej. Iron Condor",aTipo,setATipo,"text",null,true)}
-              </div>
-              <div>
-                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Entry</div>
-                {inp("ej. 5820/5830-5870/5880",aEntry,setAEntry,"text",null,true)}
-              </div>
-              <div>
-                <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Resultado P&L ($)</div>
-                {inp("ej. 350 o -120",aRes,setARes,"number",null,true)}
-              </div>
-            </div>
-            <div style={{ fontSize:11,color:MUTED,marginBottom:4 }}>Nota de Juan</div>
-            <textarea value={aNota} onChange={e=>setANota(e.target.value)} placeholder="Reflexión, contexto del mercado, lección del día..."
-              style={{ width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"10px 12px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box",height:70,resize:"none",marginBottom:10 }} />
-            <button onClick={addAlfaOp}
-              style={{ background:"linear-gradient(135deg,#ffc800,#ff9900)",border:"none",borderRadius:8,padding:"10px 20px",color:BG,fontWeight:800,fontSize:13,cursor:"pointer" }}>
-              {editingOpId ? "💾 Guardar Cambios" : "➕ Publicar Operación"}
-            </button>
-          </div>
-
-          {/* Historial Operaciones */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18,marginBottom:16 }}>
-            <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>BITÁCORA PUBLICADA ({alfaOps.length} ops)</div>
-            {[...alfaOps].reverse().map(o=>(
-              <div key={o.id} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:13 }}>
-                <span style={{ color:MUTED, width:40 }}>{o.dia}</span>
-                <span style={{ flex:1 }}>{o.e} {o.inst} — {o.tipo}</span>
-                <span style={{ fontWeight:700,color:o.res>0?GREEN:"#ff4455", width:60, textAlign:"right" }}>{o.res>0?"+":""}{o.res}</span>
-                <button onClick={() => editOp(o)} style={{ background:"none",border:"none",color:"#4db8ff",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Editar operación">✏️</button>
-                <button onClick={() => deleteAlfaOp(o.id)} style={{ background:"none",border:"none",color:"#ff4455",cursor:"pointer",marginLeft:12,padding:0,fontSize:14 }} title="Eliminar operación">🗑️</button>
-              </div>
-            ))}
-          </div>
-
-          {/* Historial Usuarios */}
-          <div style={{ background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:18 }}>
-            <div style={{ fontWeight:700,fontSize:13,marginBottom:12,color:MUTED }}>USUARIOS REGISTRADOS ({alfaUsers.length} leads)</div>
-            {[...alfaUsers].map((u, i)=>(
-              <div key={u.id || i} style={{ display:"flex",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)",fontSize:12 }}>
-                <span style={{ flex:1.5, fontWeight:700, color:"#fff" }}>{u.nombre}</span>
-                <span style={{ flex:2, color:MUTED, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</span>
-                <span style={{ flex:1, color:"#4db8ff", textAlign:"right" }}>{u.telefono}</span>
-              </div>
-            ))}
-          </div>
+          )}
         </div>
       )}
       {toast && <div style={{ position:"fixed",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(0,255,136,0.95)",color:BG,padding:"10px 20px",borderRadius:99,fontWeight:700,fontSize:13,zIndex:999 }}>{toast}</div>}
