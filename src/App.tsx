@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
-import { Home, BarChart2, BookOpen, Users, Star, Shield, TrendingUp } from "lucide-react";
+import { Home, BarChart2, BookOpen, Users, Shield } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 // Inicializar cliente Supabase
@@ -367,12 +367,10 @@ export default function App() {
   };
 
   const tabs = [
-    { id:"dash",label:"Dashboard",Icon:Home },
-    { id:"bit",label:"Comando ALFA",Icon:BarChart2 },
-    { id:"mireto",label:"Mi Reto",Icon:TrendingUp },
-    { id:"clases",label:"Clases",Icon:BookOpen },
+    { id:"dash",label:"Inicio",Icon:Home },
+    { id:"bit",label:"Bitácora del reto",Icon:BarChart2 },
+    { id:"clases",label:"Retos",Icon:BookOpen },
     { id:"com",label:"Comunidad",Icon:Users },
-    { id:"perfil",label:"Perfil",Icon:Star },
   ];
 
   // ─── PANTALLA INTRO ────────────────────────────────
@@ -811,7 +809,7 @@ export default function App() {
         {tab==="bit" && (
           <div>
             <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14 }}>
-              <h2 style={{ margin:0,fontSize:18,fontWeight:800 }}>📋 Bitácora — Comando ALFA</h2>
+              <h2 style={{ margin:0,fontSize:18,fontWeight:800 }}>📋 Bitácora del reto</h2>
               <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 11px" }}>
                 <span style={{ color:GREEN,fontWeight:700,fontSize:12 }}>+${alfaPnL.toLocaleString()}</span>
               </div>
@@ -964,7 +962,7 @@ export default function App() {
         {/* ── CLASES ── */}
         {tab==="clases" && (
           <div>
-            <h2 style={{ margin:"0 0 4px",fontSize:18,fontWeight:800 }}>🧠 Mini Clases</h2>
+            <h2 style={{ margin:"0 0 4px",fontSize:18,fontWeight:800 }}>🧠 Retos</h2>
             <p style={{ color:MUTED,fontSize:12,margin:"0 0 16px" }}>Se desbloquean día a día. Conocimiento que transforma traders.</p>
             <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
               {initClases.map(c=>{
