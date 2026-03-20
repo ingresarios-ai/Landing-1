@@ -669,32 +669,34 @@ export default function App() {
       <div className="main-content">
         {/* Header */}
         <div className="main-header">
-          <div className="header-logo-container">
-            <img src="/logo-app.png" alt="Reto 2K a 20K" />
-          </div>
-          
-          <div className="countdown-marketing-wrapper">
-            <div className="pulse-ring-header"></div>
-            <div className="pulse-ring-header" style={{ animationDelay: "0.5s" }}></div>
+          <div className="main-header-inner">
+            <div className="header-logo-container">
+              <img src="/logo-app.png" alt="Reto 2K a 20K" />
+            </div>
             
-            <div className="premium-countdown-title">El Reto comienza en:</div>
-            
-            <div className="countdown-container-premium">
-              <div className="countdown-segment-premium">
-                <div className="segment-value-premium">{cdDays < 10 ? `0${cdDays}` : cdDays}</div>
-                <div className="segment-label-premium">DÍAS</div>
-              </div>
-              <div className="countdown-segment-premium">
-                <div className="segment-value-premium">{cdHours < 10 ? `0${cdHours}` : cdHours}</div>
-                <div className="segment-label-premium">HRS</div>
-              </div>
-              <div className="countdown-segment-premium">
-                <div className="segment-value-premium">{cdMins < 10 ? `0${cdMins}` : cdMins}</div>
-                <div className="segment-label-premium">MIN</div>
-              </div>
-              <div className="countdown-segment-premium">
-                <div className="segment-value-premium beat-animation">{cdSecs < 10 ? `0${cdSecs}` : cdSecs}</div>
-                <div className="segment-label-premium">SEG</div>
+            <div className="countdown-marketing-wrapper">
+              <div className="pulse-ring-header"></div>
+              <div className="pulse-ring-header" style={{ animationDelay: "0.5s" }}></div>
+              
+              <div className="premium-countdown-title">El Reto comienza en:</div>
+              
+              <div className="countdown-container-premium">
+                <div className="countdown-segment-premium">
+                  <div className="segment-value-premium">{cdDays < 10 ? `0${cdDays}` : cdDays}</div>
+                  <div className="segment-label-premium">DÍAS</div>
+                </div>
+                <div className="countdown-segment-premium">
+                  <div className="segment-value-premium">{cdHours < 10 ? `0${cdHours}` : cdHours}</div>
+                  <div className="segment-label-premium">HRS</div>
+                </div>
+                <div className="countdown-segment-premium">
+                  <div className="segment-value-premium">{cdMins < 10 ? `0${cdMins}` : cdMins}</div>
+                  <div className="segment-label-premium">MIN</div>
+                </div>
+                <div className="countdown-segment-premium">
+                  <div className="segment-value-premium beat-animation">{cdSecs < 10 ? `0${cdSecs}` : cdSecs}</div>
+                  <div className="segment-label-premium">SEG</div>
+                </div>
               </div>
             </div>
           </div>
