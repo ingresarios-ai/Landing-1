@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@700;800;900&family=Oswald:wght@500;700&display=swap');
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -81,74 +82,137 @@ body {
 }
 
 .main-header {
-  padding: 16px 14px 16px;
+  padding: 12px 16px;
+  background: rgba(5,13,26,0.98);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.15);
   display: flex;
-  flex-direction: column; /* mobile default is column to allow large items */
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
 }
 
-.premium-countdown-container {
+.header-logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-logo-container img {
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(0,255,136,0.2));
+}
+
+.countdown-marketing-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.pulse-ring-header {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  pointer-events: none;
+  animation: pulse-header 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.countdown-container-premium {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.countdown-segment-premium {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.premium-countdown-title {
-  font-size: 13px;
-  color: #fff;
-  text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
-}
-
-.premium-countdown-boxes {
-  display: flex;
-  gap: 10px;
-}
-
-.countdown-box {
-  background: linear-gradient(145deg, rgba(0,255,136,0.1) 0%, rgba(0,100,255,0.05) 100%);
-  border: 1px solid rgba(0,255,136,0.25);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 8px 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 54px;
-}
-
-.countdown-value {
-  color: #00ff88;
-  font-size: 22px;
+.segment-value-premium {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 42px;
   font-weight: 900;
   line-height: 1;
-  text-shadow: 0 0 12px rgba(0,255,136,0.6);
-  font-family: ui-monospace, Consolas, monospace;
+  background: linear-gradient(135deg, #00ff88 0%, #00b2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
 }
 
-.countdown-label {
-  color: #5a7a94;
-  font-size: 9px;
-  text-transform: uppercase;
+.segment-label-premium {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
   font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+}
+
+.cta-button-premium {
+  background: linear-gradient(90deg, #00ff88, #00b2ff);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 24px;
+  color: #001034;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-button-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 255, 136, 0.5);
+}
+
+@keyframes pulse-header {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
 }
 
 @media (min-width: 768px) {
   .main-header {
-    padding: 16px 24px;
     flex-direction: row;
-    justify-content: flex-end; /* since logo is on sidebar for desktop */
+    height: 110px;
+    padding: 0 24px;
+    justify-content: flex-end; /* Logo is on sidebar */
   }
-  .premium-countdown-container {
-    align-items: flex-end;
+  
+  .header-logo-container {
+    display: none; /* Logo is already in the sidebar on desktop */
+  }
+
+  .countdown-marketing-wrapper {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 40px;
+    width: auto;
+  }
+
+  .countdown-container-premium {
+    margin-bottom: 0;
   }
 }
 

@@ -163,7 +163,7 @@ export default function App() {
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState(false);
   // Comando ALFA data (editable por admin)
-
+  const [reminderSet, setReminderSet] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState(Math.max(0, TARGET_DATE - Date.now()));
 
@@ -178,6 +178,11 @@ export default function App() {
   const cdHours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
   const cdMins = Math.floor((timeLeft / 1000 / 60) % 60);
   const cdSecs = Math.floor((timeLeft / 1000) % 60);
+
+  const handleReminder = () => {
+    setReminderSet(true);
+    setTimeout(() => setReminderSet(false), 5000);
+  };
 
   // Comando ALFA data (editable por admin)
   const [alfaOps, setAlfaOps] = useState<any[]>([]);
@@ -669,18 +674,37 @@ export default function App() {
       {/* Main Content Area */}
       <div className="main-content">
         {/* Header */}
-        <div className="main-header" style={{ background:"rgba(5,13,26,0.97)",borderBottom:"1px solid rgba(255,255,255,0.08)",position:"sticky",top:0,zIndex:100 }}>
-          <div className="mobile-only-header-title">
-            <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 80, objectFit: "contain" }} />
+        <div className="main-header">
+          <div className="header-logo-container">
+            <img src="/logo-app.png" alt="Reto 2K a 20K" />
           </div>
-          <div className="premium-countdown-container">
-            <div className="premium-countdown-title">Comenzamos el reto en:</div>
-            <div className="premium-countdown-boxes">
-               <div className="countdown-box"><span className="countdown-value">{cdDays}</span><span className="countdown-label">DÍAS</span></div>
-               <div className="countdown-box"><span className="countdown-value">{cdHours}</span><span className="countdown-label">HRS</span></div>
-               <div className="countdown-box"><span className="countdown-value">{cdMins}</span><span className="countdown-label">MIN</span></div>
-               <div className="countdown-box"><span className="countdown-value">{cdSecs}</span><span className="countdown-label">SEG</span></div>
+          
+          <div className="countdown-marketing-wrapper">
+            <div className="pulse-ring-header"></div>
+            <div className="pulse-ring-header" style={{ animationDelay: "0.5s" }}></div>
+            
+            <div className="countdown-container-premium">
+              <div className="countdown-segment-premium">
+                <div className="segment-value-premium">{cdDays < 10 ? `0${cdDays}` : cdDays}</div>
+                <div className="segment-label-premium">DÍAS</div>
+              </div>
+              <div className="countdown-segment-premium">
+                <div className="segment-value-premium">{cdHours < 10 ? `0${cdHours}` : cdHours}</div>
+                <div className="segment-label-premium">HRS</div>
+              </div>
+              <div className="countdown-segment-premium">
+                <div className="segment-value-premium">{cdMins < 10 ? `0${cdMins}` : cdMins}</div>
+                <div className="segment-label-premium">MIN</div>
+              </div>
+              <div className="countdown-segment-premium">
+                <div className="segment-value-premium">{cdSecs < 10 ? `0${cdSecs}` : cdSecs}</div>
+                <div className="segment-label-premium">SEG</div>
+              </div>
             </div>
+
+            <button className="cta-button-premium" onClick={handleReminder}>
+              {reminderSet ? "¡RECORDATORIO FIJADO!" : "AVÍSAME CUANDO COMIENCE EL RETO"}
+            </button>
           </div>
         </div>
 
