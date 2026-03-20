@@ -165,14 +165,19 @@ body {
 
 @media (min-width: 768px) {
   .landing-container {
-    max-width: 960px;
+    max-width: 1150px; /* Increased overall width */
     flex-direction: row;
     align-items: center;
-    gap: 48px;
+    gap: 60px;
   }
   
-  .landing-text, .landing-media {
+  .landing-text {
     flex: 1;
+    min-width: 0;
+  }
+  
+  .landing-media {
+    flex: 1.4; /* Give the video more width proportion */
     min-width: 0;
   }
 
