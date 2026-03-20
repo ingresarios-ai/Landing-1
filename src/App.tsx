@@ -657,14 +657,7 @@ export default function App() {
             <img src="/logo-app.png" alt="Reto 2K a 20K" style={{ height: 64, objectFit: "contain" }} />
           </div>
           <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto",position:"relative",zIndex:10 }}>
-          <div style={{ background:"rgba(0,255,136,0.1)",border:"1px solid rgba(0,255,136,0.3)",borderRadius:7,padding:"4px 10px",textAlign:"center" }}>
-            <div style={{ fontSize:9,color:GREEN }}>🪙 COINS</div>
-            <div style={{ fontSize:14,fontWeight:800 }}>{coins.toLocaleString()}</div>
-          </div>
-          <div style={{ background:"rgba(255,140,0,0.1)",border:"1px solid rgba(255,140,0,0.3)",borderRadius:7,padding:"4px 10px",textAlign:"center" }}>
-            <div style={{ fontSize:9,color:"#ff8c00" }}>🔥 DÍA</div>
-            <div style={{ fontSize:14,fontWeight:800 }}>{alfaDia}/7</div>
-          </div>
+
           <button onClick={()=>setScreen("admin")} style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:7,padding:"7px 9px",cursor:"pointer",display:"flex",alignItems:"center" }}>
             <Shield size={14} color={MUTED} />
           </button>
