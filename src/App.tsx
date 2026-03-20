@@ -642,7 +642,7 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ padding:"16px 14px 100px",maxWidth:860,margin:"0 auto",width:"100%",boxSizing:"border-box" }}>
+      <div style={{ padding:"16px 14px 100px", maxWidth:1080, margin:"0 auto", width:"100%", boxSizing:"border-box" }}>
 
         {/* ── DASHBOARD ── */}
         {tab==="dash" && (
@@ -727,7 +727,7 @@ export default function App() {
                           }}>
                             {isActive ? "▶" : "▶"}
                           </div>
-                          <div style={{ flex: 1 }}>
+                          <div style={{ flex: 1, minWidth: 150 }}>
                             <div style={{ fontSize: 13, fontWeight: 700, color: isActive ? GREEN : "#fff" }}>
                               Reto Día {v.dia}
                             </div>
