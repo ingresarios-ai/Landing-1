@@ -82,11 +82,12 @@ body {
 }
 
 .main-header {
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: rgba(5,13,26,0.98);
   border-bottom: 1px solid rgba(0, 255, 136, 0.15);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   position: sticky;
@@ -96,13 +97,13 @@ body {
 }
 
 .header-logo-container {
-  width: 100%;
+  flex-shrink: 0;
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
 }
 
 .header-logo-container img {
-  height: 90px;
+  height: 60px;
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(0,255,136,0.2));
 }
@@ -110,9 +111,19 @@ body {
 .countdown-marketing-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   position: relative;
-  width: 100%;
+}
+
+.premium-countdown-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
 }
 
 .pulse-ring-header {
@@ -131,8 +142,8 @@ body {
 .countdown-container-premium {
   display: flex;
   justify-content: center;
-  gap: 24px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 10px;
   position: relative;
   z-index: 2;
 }
@@ -145,7 +156,7 @@ body {
 
 .segment-value-premium {
   font-family: 'Montserrat', sans-serif;
-  font-size: 54px;
+  font-size: 26px;
   font-weight: 900;
   line-height: 1;
   background: linear-gradient(135deg, #00b2ff 0%, #0aff85 100%);
@@ -154,28 +165,28 @@ body {
   color: transparent;
   text-shadow: 0 4px 15px rgba(0, 255, 133, 0.3);
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .segment-value-premium::after {
   content: '';
   position: absolute;
-  bottom: -6px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 40px;
-  height: 4px;
+  width: 20px;
+  height: 3px;
   background: linear-gradient(90deg, #00b2ff, #0aff85);
   border-radius: 2px;
 }
 
 .segment-label-premium {
   font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: #b0c4de;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
 }
 
 @keyframes beat {
@@ -191,12 +202,12 @@ body {
 .cta-button-premium {
   background: linear-gradient(90deg, #00ff88, #00b2ff);
   border: none;
-  border-radius: 20px;
-  padding: 10px 24px;
+  border-radius: 16px;
+  padding: 6px 12px;
   color: #001034;
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -229,14 +240,43 @@ body {
   }
 
   .countdown-marketing-wrapper {
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 40px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 8px;
     width: auto;
+  }
+  
+  .premium-countdown-title {
+    font-size: 14px;
+    margin-bottom: 2px;
   }
 
   .countdown-container-premium {
-    margin-bottom: 0;
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .segment-value-premium {
+    font-size: 54px;
+    margin-bottom: 12px;
+  }
+
+  .segment-value-premium::after {
+    bottom: -6px;
+    width: 40px;
+    height: 4px;
+  }
+
+  .segment-label-premium {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+  
+  .cta-button-premium {
+    padding: 10px 24px;
+    font-size: 13px;
+    border-radius: 20px;
   }
 }
 

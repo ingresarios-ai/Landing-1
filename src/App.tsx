@@ -683,6 +683,8 @@ export default function App() {
             <div className="pulse-ring-header"></div>
             <div className="pulse-ring-header" style={{ animationDelay: "0.5s" }}></div>
             
+            <div className="premium-countdown-title">El Reto comienza en:</div>
+            
             <div className="countdown-container-premium">
               <div className="countdown-segment-premium">
                 <div className="segment-value-premium">{cdDays < 10 ? `0${cdDays}` : cdDays}</div>
