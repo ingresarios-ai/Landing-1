@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
-import { Home, BarChart2, BookOpen, Users, Shield } from "lucide-react";
+import { Home, BarChart2, BookOpen, Users } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 // Inicializar cliente Supabase
@@ -658,9 +658,7 @@ export default function App() {
           </div>
           <div style={{ display:"flex",gap:8,alignItems:"center",marginLeft:"auto",position:"relative",zIndex:10 }}>
 
-          <button onClick={()=>setScreen("admin")} style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:7,padding:"7px 9px",cursor:"pointer",display:"flex",alignItems:"center" }}>
-            <Shield size={14} color={MUTED} />
-          </button>
+
         </div>
       </div>
 
