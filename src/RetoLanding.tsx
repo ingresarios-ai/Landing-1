@@ -169,7 +169,7 @@ export default function RetoLanding() {
 
           {/* Social proof line */}
           <p className="text-xs text-on-surface-variant">
-            Acceso completamente gratuito · Sin tarjeta de crédito
+            Acceso completamente gratuito
           </p>
 
           {/* Date badge */}
