@@ -12,7 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const BG = "#050d1a", CARD = "rgba(255,255,255,0.04)", BORDER = "rgba(255,255,255,0.1)";
 const GREEN = "#00ff88", MUTED = "#5a7a94", FONT = "'Inter',sans-serif";
 const ADMIN_PASS = "alfa2025";
-const TARGET_DATE = new Date("2026-04-20T18:00:00-05:00").getTime();
+const TARGET_DATE = new Date("2026-04-20T19:00:00-05:00").getTime();
 
 // ─── HELPERS DE PAÍSES ─────────────────────────────
 const COUNTRY_DATA: Record<string, { flag: string; code: string }> = {
