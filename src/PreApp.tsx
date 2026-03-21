@@ -302,16 +302,36 @@ export default function PreApp() {
         </div>
 
         {/* ── Post-chart copy ──────────────────────── */}
-        <div style={{ marginTop: 28 }}>
-          <p style={{ margin: "0 0 12px", fontSize: 15, lineHeight: 1.75, color: "rgba(255,255,255,0.7)" }}>
-            Lo que ves arriba no es una simulación. Es el crecimiento real y diario de la cuenta que estaremos
-            operando en vivo del <strong style={{ color: "#fff" }}>20 de abril al 3 de mayo</strong>.
-          </p>
-          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.75, color: "rgba(255,255,255,0.7)" }}>
-            Mientras esperas el inicio oficial, esta gráfica te mostrará la transparencia total de nuestra
-            operativa. Sin filtros, sin ediciones:
-            <strong style={{ color: "#fff" }}> Pura ejecución del Método Ingresarios.</strong>
-          </p>
+        <div style={{ 
+          marginTop: 40,
+          background: "linear-gradient(135deg, rgba(72,153,241,0.05), rgba(0,217,126,0.05))",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 20,
+          padding: "32px",
+          position: "relative",
+          overflow: "hidden"
+        }}>
+          {/* Accent border top */}
+          <div style={{
+            position: "absolute", top: 0, left: 0, right: 0, height: 2,
+            background: `linear-gradient(90deg, ${BLUE}, ${GREEN})`,
+            opacity: 0.6
+          }} />
+
+          <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+            <span style={{ fontSize: 32, lineHeight: 1, filter: "drop-shadow(0 0 8px rgba(72,153,241,0.4))" }}>💡</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: "0 0 16px", fontSize: 17, lineHeight: 1.8, color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
+                Lo que ves arriba <strong style={{ color: BLUE }}>no es una simulación</strong>. Es el crecimiento real y diario de la cuenta que estaremos
+                operando en vivo del <strong style={{ color: "#fff", background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: 4 }}>20 de abril al 3 de mayo</strong>.
+              </p>
+              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.8, color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
+                Mientras esperas el inicio oficial, esta gráfica te mostrará la transparencia total de nuestra
+                operativa. Sin filtros, sin ediciones:
+                <strong style={{ color: GREEN, fontSize: 18, fontWeight: 800 }}> Pura ejecución del Método Ingresarios.</strong>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* ── CTA WhatsApp section ──────────────────── */}
