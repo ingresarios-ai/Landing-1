@@ -174,10 +174,36 @@ export default function PreApp() {
         </div>
       </header>
 
+      {/* ── Confirmation banner ────────────────────── */}
+      <div style={{
+        maxWidth: 1080, margin: "0 auto 0", padding: "0 16px 0",
+      }}>
+        <div style={{
+          background: "linear-gradient(135deg, rgba(0,217,126,0.15), rgba(0,100,255,0.1))",
+          border: "2px solid rgba(0,217,126,0.5)",
+          borderRadius: 16, padding: "18px 24px",
+          display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 28,
+        }}>
+          <span style={{ fontSize: 30, lineHeight: 1, flexShrink: 0 }}>✅</span>
+          <div>
+            <p style={{ margin: "0 0 4px", fontWeight: 900, fontSize: 18, color: GREEN, letterSpacing: "0.02em" }}>
+              ¡REGISTRO CONFIRMADO!
+            </p>
+            <p style={{ margin: 0, fontSize: 14, color: "rgba(255,255,255,0.75)" }}>
+              Ya tienes un lugar en el Reto 2k a 20k.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* ── Chart container ──────────────────────────── */}
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "0 16px 60px" }}>
 
-        {/* Stats strip */}
+        {/* Section title */}
+        <h2 style={{ margin: "0 0 20px", fontSize: 13, fontWeight: 800, letterSpacing: "0.2em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
+          ESTO ES LO QUE ESTÁ PASANDO JUSTO AHORA:
+        </h2>
+
         <div style={{
           display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap",
         }}>
@@ -265,10 +291,70 @@ export default function PreApp() {
           </ResponsiveContainer>
         </div>
 
-        {/* Caption */}
-        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: 11, marginTop: 14 }}>
-          Actualizado en tiempo real · Operaciones reales sin edición
-        </p>
+        {/* ── Post-chart copy ──────────────────────── */}
+        <div style={{ marginTop: 28 }}>
+          <p style={{ margin: "0 0 12px", fontSize: 15, lineHeight: 1.75, color: "rgba(255,255,255,0.7)" }}>
+            Lo que ves arriba no es una simulación. Es el crecimiento real y diario de la cuenta que estaremos
+            operando en vivo del <strong style={{ color: "#fff" }}>20 de abril al 3 de mayo</strong>.
+          </p>
+          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.75, color: "rgba(255,255,255,0.7)" }}>
+            Mientras esperas el inicio oficial, esta gráfica te mostrará la transparencia total de nuestra
+            operativa. Sin filtros, sin ediciones:
+            <strong style={{ color: "#fff" }}> Pura ejecución del Método Ingresarios.</strong>
+          </p>
+        </div>
+
+        {/* ── CTA WhatsApp section ──────────────────── */}
+        <div style={{
+          marginTop: 40,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 20, padding: "32px 24px",
+          textAlign: "center",
+        }}>
+          <h2 style={{
+            margin: "0 0 16px",
+            fontSize: 20, fontWeight: 900,
+            letterSpacing: "0.05em",
+            background: `linear-gradient(90deg, #ffffff, ${GREEN})`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}>
+            ¡EL SIGUIENTE PASO ES EL MÁS IMPORTANTE!
+          </h2>
+
+          <p style={{ margin: "0 0 28px", fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.65)", maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
+            Para que no te pierdas ni una sola sesión, alertas de movimientos importantes y el acceso
+            directo a la plataforma de herramientas (Termostato Financiero, Calculadora de Gastos Hormiga y más),
+            debes unirte al grupo exclusivo de alertas.
+          </p>
+
+          <a
+            href="https://chat.whatsapp.com/EpI5olxnvRv6F6uA1ex183?mode=gi_t"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 10,
+              background: "linear-gradient(135deg, #25d366, #128c4e)",
+              color: "#fff", textDecoration: "none",
+              fontWeight: 800, fontSize: 16, letterSpacing: "0.03em",
+              padding: "16px 32px", borderRadius: 14,
+              boxShadow: "0 4px 24px rgba(37,211,102,0.35)",
+              transition: "transform 0.15s ease, box-shadow 0.15s ease",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 32px rgba(37,211,102,0.5)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLAnchorElement).style.transform = "";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 24px rgba(37,211,102,0.35)";
+            }}
+          >
+            <span style={{ fontSize: 22 }}>👉</span>
+            UNIRME AL GRUPO DE ALERTAS (WHATSAPP)
+          </a>
+        </div>
       </div>
     </div>
   );
