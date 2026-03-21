@@ -21,23 +21,7 @@ const COUNTRY_DATA: Record<string, { flag: string; code: string }> = {
   BO: { flag: "🇧🇴", code: "+591" },
 };
 
-const TESTIMONIALS = [
-  {
-    name: "Carlos Mendoza",
-    handle: "@carlosmtrader",
-    text: "Llevo 3 años buscando algo así. Ingresarios no vende ilusiones — muestra resultados reales con datos reales. Es la primera comunidad de trading que me genera confianza total.",
-  },
-  {
-    name: "Daniela Restrepo",
-    handle: "@dani_invierte",
-    text: "Me inscribí sin expectativas y quedé con la boca abierta. Ver cómo operan en vivo, con una cuenta real, sin cortes ni edición, es exactamente lo que el trading en redes sociales nunca muestra.",
-  },
-  {
-    name: "Miguel Ángel Torres",
-    handle: "@migueltrading",
-    text: "El Método Ingresarios cambió cómo pienso el dinero. No es solo trading — es psicología financiera, gestión del riesgo y disciplina. Lo que debería enseñarse desde el colegio.",
-  },
-];
+
 
 export default function RetoLanding() {
   const navigate = useNavigate();
@@ -96,7 +80,7 @@ export default function RetoLanding() {
         <div className="flex justify-center px-6 py-3 max-w-5xl mx-auto">
           <img
             alt="Reto 2k a 20k"
-            className="h-12 md:h-14 w-auto object-contain"
+            className="h-24 md:h-28 w-auto object-contain"
             src="https://lh3.googleusercontent.com/aida/ADBb0uinbkFg8lnkEkTf3Jwoi4AElHQmf8esQ8GjIvYtgtthwNymvyEPbbpLx6PvPKGS1wljfMegd7NSybtT1OawKHeEKhjyIEzU7dvEUsE3E0taGu90-TtEFWoYVOmAfXY5lbVkg0jYiiLFBXwbPuXgoa1I6_0fNFoUC2GPY_6Vsv0VCjuGFRQzTcS0IAFK26MfNcuk_yZPI2ihnIQ93j67lq_0KefsP0PdaZpssTfSXiyADamvsEMNIth0Lrs8gPCrQ-6D2mXECGgNYg"
           />
         </div>
@@ -110,6 +94,26 @@ export default function RetoLanding() {
           <p className="text-xs font-headline font-bold tracking-[0.25em] text-on-surface-variant uppercase">
             RETO 2K A 20K · INGRESARIOS
           </p>
+
+          {/* Countdown — right below eyebrow */}
+          <div className="flex flex-col items-center gap-2 w-full">
+            <p className="text-[10px] font-headline font-semibold tracking-widest text-primary/70 uppercase">
+              Comenzamos en:
+            </p>
+            <div className="grid grid-cols-4 gap-2 w-full max-w-xs text-center">
+              {[
+                { val: pad(cdDays),  label: "Días" },
+                { val: pad(cdHours), label: "Horas" },
+                { val: pad(cdMins),  label: "Min" },
+                { val: pad(cdSecs),  label: "Seg" },
+              ].map(({ val, label }) => (
+                <div key={label} className="flex flex-col items-center gap-0.5 bg-surface-container rounded-xl py-2.5 border border-outline-variant/15">
+                  <span className="text-xl font-headline font-bold text-on-surface tabular-nums leading-none">{val}</span>
+                  <span className="text-[8px] font-label uppercase tracking-widest text-on-surface-variant">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* H1 */}
           <h1 className="font-headline font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] tracking-tight leading-[1.08]">
@@ -183,56 +187,35 @@ export default function RetoLanding() {
           </div>
         </section>
 
-        {/* ── COUNTDOWN ──────────────────────────── */}
-        <section className="px-4 sm:px-6 py-6 max-w-2xl mx-auto">
-          <div className="grid grid-cols-4 gap-3 text-center">
+        {/* ── WHAT HAPPENS SECTION ────────────────── */}
+        <section className="px-4 sm:px-6 py-12 pb-16 max-w-3xl mx-auto">
+          <h2 className="font-headline font-bold text-2xl sm:text-3xl text-center mb-3">
+            ¿Qué va a pasar en el Reto de 2k a 20k?
+          </h2>
+          <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed text-center mb-10">
+            Durante 14 días consecutivos, nos conectaremos a las 7:00 PM (Colombia) para operar una cuenta real frente a toda nuestra audiencia. No es un curso más; es una demostración de transparencia donde verás:
+          </p>
+
+          <div className="flex flex-col gap-4">
             {[
-              { val: pad(cdDays),  label: "Días" },
-              { val: pad(cdHours), label: "Horas" },
-              { val: pad(cdMins),  label: "Min" },
-              { val: pad(cdSecs),  label: "Seg" },
-            ].map(({ val, label }) => (
-              <div key={label} className="flex flex-col items-center gap-1 bg-surface-container rounded-2xl py-4 border border-outline-variant/15">
-                <span className="text-3xl sm:text-4xl font-headline font-bold text-on-surface tabular-nums leading-none">
-                  {val}
-                </span>
-                <span className="text-[9px] font-label uppercase tracking-widest text-on-surface-variant">{label}</span>
+              { icon: "monitoring",  color: "text-primary-fixed",  bg: "bg-primary/8",   title: "Trading en vivo",         sub: "El crecimiento de una cuenta de $2k a $20k." },
+              { icon: "psychology",  color: "text-secondary-dim",  bg: "bg-secondary/8", title: "Psicología y Mentalidad",  sub: "Cómo dominar tu termostato financiero." },
+              { icon: "school",      color: "text-tertiary-fixed", bg: "bg-tertiary/8",  title: "Educación Real",           sub: "Detectar estafas, eliminar gastos hormiga y dominar inversiones de alto nivel." },
+            ].map(({ icon, color, bg, title, sub }) => (
+              <div key={icon} className={`flex items-start gap-4 p-5 rounded-2xl ${bg} border border-outline-variant/10 hover:border-outline-variant/30 transition-all`}>
+                <span className={`material-symbols-outlined ${color} text-2xl shrink-0 mt-0.5`} style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                <div>
+                  <h4 className="font-headline font-bold text-sm text-on-surface">{title}:</h4>
+                  <p className="text-xs text-on-surface-variant mt-0.5 leading-relaxed">{sub}</p>
+                </div>
               </div>
             ))}
           </div>
-        </section>
 
-        {/* ── TESTIMONIALS ───────────────────────── */}
-        <section className="px-4 sm:px-6 py-10 pb-16 max-w-5xl mx-auto">
-          <p className="text-center text-xs font-headline font-bold tracking-[0.2em] text-primary-fixed uppercase mb-8">
-            Lo que dice nuestra comunidad
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            {TESTIMONIALS.map(({ name, handle, text }) => (
-              <div
-                key={handle}
-                className="flex flex-col gap-3 p-5 rounded-2xl bg-surface-container border border-outline-variant/15 hover:border-outline-variant/35 transition-all"
-              >
-                {/* Avatar row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center shrink-0">
-                      <span className="font-headline font-bold text-sm text-primary-fixed">{name[0]}</span>
-                    </div>
-                    <div>
-                      <p className="font-headline font-bold text-sm text-on-surface leading-none">{name}</p>
-                      <p className="text-[10px] text-on-surface-variant mt-0.5">{handle}</p>
-                    </div>
-                  </div>
-                  {/* X/Twitter icon */}
-                  <svg className="w-4 h-4 text-on-surface-variant/40" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                  </svg>
-                </div>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{text}</p>
-              </div>
-            ))}
+          <div className="mt-8 p-5 border-l-2 border-primary-fixed bg-primary/5 rounded-r-2xl">
+            <p className="font-body italic text-sm text-on-surface">
+              Tu acceso te dará entrada a una plataforma interactiva con herramientas y dinámicas exclusivas.
+            </p>
           </div>
         </section>
       </main>
