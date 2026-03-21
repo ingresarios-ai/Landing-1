@@ -92,7 +92,7 @@ export default function RetoLanding() {
 
           {/* Eyebrow label */}
           <p className="text-xs font-headline font-bold tracking-[0.25em] text-on-surface-variant uppercase">
-            RETO 2K A 20K · INGRESARIOS
+            Del 20 de abril al 3 de mayo
           </p>
 
           {/* Countdown — right below eyebrow */}
