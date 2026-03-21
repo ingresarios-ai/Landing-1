@@ -205,7 +205,9 @@ export default function PreApp() {
           fontSize: 22, 
           fontWeight: 900, 
           letterSpacing: "0.05em", 
-          color: "#fff", 
+          background: `linear-gradient(90deg, #ffffff, ${GREEN})`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
           textTransform: "uppercase",
           textAlign: "center"
         }}>
