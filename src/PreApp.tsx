@@ -336,26 +336,44 @@ export default function PreApp() {
 
         {/* ── CTA WhatsApp section ──────────────────── */}
         <div style={{
-          marginTop: 40,
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 20, padding: "32px 24px",
+          marginTop: 48,
+          background: "rgba(0, 217, 126, 0.05)",
+          border: "2px solid rgba(0, 217, 126, 0.25)",
+          borderRadius: 24, padding: "40px 24px",
           textAlign: "center",
+          boxShadow: `0 0 40px rgba(0, 217, 126, 0.1)`,
+          position: "relative"
         }}>
+          {/* Badge indicator */}
+          <div style={{
+            position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
+            background: GREEN, color: "#000", fontSize: 11, fontWeight: 900,
+            padding: "4px 16px", borderRadius: 99, letterSpacing: "0.1em"
+          }}>
+            ACCIÓN REQUERIDA
+          </div>
+
           <h2 style={{
-            margin: "0 0 16px",
-            fontSize: 20, fontWeight: 900,
-            letterSpacing: "0.05em",
-            background: `linear-gradient(90deg, #ffffff, ${GREEN})`,
+            margin: "0 0 20px",
+            fontSize: 32, fontWeight: 950,
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            background: `linear-gradient(135deg, #ffffff 40%, ${GREEN})`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
+            filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
           }}>
-            ¡EL SIGUIENTE PASO ES EL MÁS IMPORTANTE!
+            ¡EL SIGUIENTE PASO ES <br/> EL MÁS IMPORTANTE!
           </h2>
 
-          <p style={{ margin: "0 0 28px", fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,0.65)", maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
-            Para que no te pierdas ni una sola sesión, alertas de movimientos importantes y el acceso
-            directo a la plataforma de herramientas (Termostato Financiero, Calculadora de Gastos Hormiga y más),
+          <p style={{ 
+            margin: "0 0 32px", fontSize: 16, lineHeight: 1.7, 
+            color: "rgba(255,255,255,0.9)", maxWidth: 650, 
+            marginLeft: "auto", marginRight: "auto",
+            fontWeight: 500
+          }}>
+            Para que no te pierdas ni una sola sesión, alertas de movimientos importantes y el acceso 
+            directo a la plataforma de herramientas <strong style={{color: GREEN}}>(Termostato Financiero, Calculadora de Gastos Hormiga y más)</strong>, 
             debes unirte al grupo exclusivo de alertas.
           </p>
 
@@ -364,26 +382,30 @@ export default function PreApp() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
+              display: "inline-flex", alignItems: "center", gap: 14,
               background: "linear-gradient(135deg, #25d366, #128c4e)",
               color: "#fff", textDecoration: "none",
-              fontWeight: 800, fontSize: 16, letterSpacing: "0.03em",
-              padding: "16px 32px", borderRadius: 14,
-              boxShadow: "0 4px 24px rgba(37,211,102,0.35)",
-              transition: "transform 0.15s ease, box-shadow 0.15s ease",
+              fontWeight: 900, fontSize: 18, letterSpacing: "0.02em",
+              padding: "20px 48px", borderRadius: 16,
+              boxShadow: "0 8px 32px rgba(37,211,102,0.45)",
+              transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 32px rgba(37,211,102,0.5)";
+              (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.05) translateY(-4px)";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 12px 48px rgba(37,211,102,0.6)";
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLAnchorElement).style.transform = "";
-              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 24px rgba(37,211,102,0.35)";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 32px rgba(37,211,102,0.45)";
             }}
           >
-            <span style={{ fontSize: 22 }}>👉</span>
+            <span style={{ fontSize: 26 }}>👉</span>
             UNIRME AL GRUPO DE ALERTAS (WHATSAPP)
           </a>
+
+          <p style={{ marginTop: 24, fontSize: 12, color: "rgba(255,255,255,0.4)", fontWeight: 500 }}>
+            Libre de SPAM • Solo Información Crítica del Reto
+          </p>
         </div>
       </div>
     </div>
