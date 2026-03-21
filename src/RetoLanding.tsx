@@ -60,7 +60,7 @@ export default function RetoLanding() {
           source: "Reto2026Landing",
         }),
       });
-      navigate("/preview");
+      navigate("/pre");
     } catch {
       setIsSubmitting(false);
       alert("Error al registrarse. Intenta de nuevo.");
