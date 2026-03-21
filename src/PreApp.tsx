@@ -200,7 +200,15 @@ export default function PreApp() {
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "0 16px 60px" }}>
 
         {/* Section title */}
-        <h2 style={{ margin: "0 0 20px", fontSize: 13, fontWeight: 800, letterSpacing: "0.2em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>
+        <h2 style={{ 
+          margin: "0 0 32px", 
+          fontSize: 22, 
+          fontWeight: 900, 
+          letterSpacing: "0.05em", 
+          color: "#fff", 
+          textTransform: "uppercase",
+          textAlign: "center"
+        }}>
           ESTO ES LO QUE ESTÁ PASANDO JUSTO AHORA:
         </h2>
 
