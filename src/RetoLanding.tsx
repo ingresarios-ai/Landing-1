@@ -126,21 +126,20 @@ export default function RetoLanding() {
 
           {/* ── FORM ─────────────── */}
           <form onSubmit={handleRegister} className="w-full max-w-xl flex flex-col gap-3 mt-1">
-            {/* Row 1: name + email */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                required type="text" placeholder="Tu nombre"
-                value={formName} onChange={e => setFormName(e.target.value)}
-                className="flex-1 bg-surface-container-highest border border-outline-variant/30 focus:border-primary-fixed focus:ring-0 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 transition-all"
-              />
-              <input
-                required type="email" placeholder="Tu email"
-                value={formEmail} onChange={e => setFormEmail(e.target.value)}
-                className="flex-1 bg-surface-container-highest border border-outline-variant/30 focus:border-primary-fixed focus:ring-0 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 transition-all"
-              />
-            </div>
+            {/* Row 1: name */}
+            <input
+              required type="text" placeholder="Tu nombre"
+              value={formName} onChange={e => setFormName(e.target.value)}
+              className="w-full bg-surface-container-highest border border-outline-variant/30 focus:border-primary-fixed focus:ring-0 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 transition-all"
+            />
+            {/* Row 2: email */}
+            <input
+              required type="email" placeholder="Tu email"
+              value={formEmail} onChange={e => setFormEmail(e.target.value)}
+              className="w-full bg-surface-container-highest border border-outline-variant/30 focus:border-primary-fixed focus:ring-0 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 transition-all"
+            />
 
-            {/* Row 2: whatsapp + button */}
+            {/* Row 3: whatsapp */}
             <div className="flex gap-3">
               <select
                 value={formCountry} onChange={e => setFormCountry(e.target.value)}
@@ -157,13 +156,15 @@ export default function RetoLanding() {
                 value={formPhone} onChange={e => setFormPhone(e.target.value)}
                 className="flex-1 bg-surface-container-highest border border-outline-variant/30 focus:border-primary-fixed focus:ring-0 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 transition-all"
               />
-              <button
-                type="submit" disabled={isSubmitting}
-                className="kinetic-gradient text-on-primary-fixed font-headline font-extrabold px-5 py-3 rounded-xl text-sm whitespace-nowrap hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
-              >
-                {isSubmitting ? "..." : "¡Quiero entrar!"}
-              </button>
             </div>
+
+            {/* Row 4: CTA full width */}
+            <button
+              type="submit" disabled={isSubmitting}
+              className="w-full kinetic-gradient text-on-primary-fixed font-headline font-extrabold py-4 rounded-xl text-base hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
+            >
+              {isSubmitting ? "Procesando..." : "¡QUIERO ENTRAR AL RETO!"}
+            </button>
           </form>
 
           {/* Social proof line */}
