@@ -4,7 +4,94 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>app-reto</title>
+    <title>Reto 2k a 20k | Ingresarios</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#903100",
+              "on-primary-fixed-variant": "#006624",
+              "primary": "#a9ffac",
+              "on-tertiary": "#005561",
+              "on-surface": "#e2e8fb",
+              "on-tertiary-container": "#004b57",
+              "tertiary-fixed": "#00e0ff",
+              "tertiary": "#81e9ff",
+              "on-background": "#e2e8fb",
+              "tertiary-container": "#00e0ff",
+              "secondary-fixed-dim": "#ffb194",
+              "secondary-fixed": "#ffc4af",
+              "primary-fixed-dim": "#00ee5f",
+              "on-error-container": "#ffa8a3",
+              "surface-bright": "#222c41",
+              "secondary-dim": "#ff7439",
+              "surface-container-high": "#172031",
+              "primary-dim": "#00ee5f",
+              "surface-dim": "#070e1b",
+              "surface": "#070e1b",
+              "error-dim": "#d7383b",
+              "on-surface-variant": "#a5abbd",
+              "outline": "#6f7586",
+              "tertiary-dim": "#00d1ee",
+              "surface-container-low": "#0c1322",
+              "on-error": "#490006",
+              "on-primary": "#006523",
+              "on-secondary-fixed": "#611e00",
+              "secondary-container": "#a73a00",
+              "outline-variant": "#414857",
+              "primary-container": "#00fe66",
+              "background": "#070e1b",
+              "on-tertiary-fixed-variant": "#005562",
+              "on-tertiary-fixed": "#00363f",
+              "tertiary-fixed-dim": "#00d1ee",
+              "inverse-on-surface": "#4e5565",
+              "inverse-surface": "#f9f9ff",
+              "on-primary-container": "#005b1f",
+              "primary-fixed": "#00fe66",
+              "surface-container-lowest": "#000000",
+              "on-primary-fixed": "#004616",
+              "on-secondary-container": "#fff6f3",
+              "surface-container": "#11192a",
+              "surface-variant": "#1c2639",
+              "error": "#ff716c",
+              "on-secondary": "#3f1100",
+              "surface-tint": "#a9ffac",
+              "surface-container-highest": "#1c2639",
+              "secondary": "#ff7439",
+              "inverse-primary": "#006e27",
+              "error-container": "#9f0519"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+    <style>
+        .glass-nav {
+            background: rgba(7, 14, 27, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .kinetic-gradient {
+            background: linear-gradient(135deg, #a9ffac 0%, #00fe66 100%);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(0, 254, 102, 0.4);
+        }
+        .surface-recessed {
+            background: #000000;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+    </style>
   </head>
   <body>
     <div id="root"></div>
