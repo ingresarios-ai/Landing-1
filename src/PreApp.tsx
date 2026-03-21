@@ -13,6 +13,7 @@ const supabase = createClient(
 const BG = "#050d1a";
 const BLUE = "#4899f1";
 const GREEN = "#00d97e";
+const TARGET_DATE = new Date("2026-04-20T19:00:00-05:00").getTime();
 
 // ── Demo data matching the reference image ──────────────────
 const DEMO_DATA = [
@@ -92,6 +93,18 @@ const CustomTooltip = ({ active, payload }: any) => {
 // ── Main component ──────────────────────────────────────────
 export default function PreApp() {
   const [chartData, setChartData] = useState(DEMO_DATA);
+  const [timeLeft, setTimeLeft] = useState(Math.max(0, TARGET_DATE - Date.now()));
+
+  useEffect(() => {
+    const timer = setInterval(() => setTimeLeft(Math.max(0, TARGET_DATE - Date.now())), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const cdDays  = Math.floor(timeLeft / 86400000);
+  const cdHours = Math.floor((timeLeft / 3600000) % 24);
+  const cdMins  = Math.floor((timeLeft / 60000) % 60);
+  const cdSecs  = Math.floor((timeLeft / 1000) % 60);
 
   // Try to load real ops from Supabase; fall back to demo
   useEffect(() => {
@@ -128,12 +141,37 @@ export default function PreApp() {
       fontFamily: "'Inter', sans-serif", color: "#fff",
     }}>
       {/* ── Logo only header ─────────────────────────── */}
-      <header style={{ display: "flex", justifyContent: "center", padding: "24px 0 20px" }}>
+      <header style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0 16px", gap: 16 }}>
         <img
           src="/logo-app.png"
           alt="Reto 2K a 20K Ingresarios"
           style={{ height: 100, objectFit: "contain" }}
         />
+
+        {/* Countdown ── */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, letterSpacing: "0.15em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase" }}>
+            El Reto comienza en:
+          </p>
+          <div style={{ display: "flex", gap: 8 }}>
+            {[
+              { val: pad(cdDays),  label: "DÍAS" },
+              { val: pad(cdHours), label: "HRS"  },
+              { val: pad(cdMins),  label: "MIN"  },
+              { val: pad(cdSecs),  label: "SEG"  },
+            ].map(({ val, label }) => (
+              <div key={label} style={{
+                display: "flex", flexDirection: "column", alignItems: "center",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 10, padding: "10px 14px", minWidth: 56,
+              }}>
+                <span style={{ fontSize: 24, fontWeight: 900, color: BLUE, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{val}</span>
+                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", marginTop: 3, letterSpacing: "0.1em" }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </header>
 
       {/* ── Chart container ──────────────────────────── */}
