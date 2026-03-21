@@ -13,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/reto" element={<RetoLanding />} />
         <Route path="/preview" element={<App />} />
         <Route path="/app" element={<App />} />
+        <Route path="/pre" element={<App />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
