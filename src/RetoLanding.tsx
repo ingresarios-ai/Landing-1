@@ -36,6 +36,17 @@ export default function RetoLanding() {
     document.documentElement.classList.add("dark");
     document.body.className = "bg-surface text-on-surface font-body selection:bg-primary/30";
     const timer = setInterval(() => setTimeLeft(Math.max(0, TARGET_DATE - Date.now())), 1000);
+
+    // Auto-detect country via IP
+    fetch("https://ipapi.co/json/")
+      .then(r => r.json())
+      .then(d => {
+        if (d.country_code && COUNTRY_DATA[d.country_code]) {
+          setFormCountry(d.country_code);
+        }
+      })
+      .catch(() => {}); // silently fall back to CO
+
     return () => clearInterval(timer);
   }, []);
 
