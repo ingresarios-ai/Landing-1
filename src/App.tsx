@@ -428,7 +428,7 @@ export default function App() {
           sendToGHL("registro"); 
           setScreen("app"); 
         }}
-          style={{ width:"100%",background:"linear-gradient(135deg,#00ff88,#00cc6a)",border:"none",borderRadius:10,padding:"15px",color:BG,fontWeight:800,fontSize:15,cursor:"pointer",marginTop:6 }}>
+          style={{ width:"100%",background:"#7DA04D",border:"none",borderRadius:10,padding:"15px",color:"#000",fontWeight:800,fontSize:15,cursor:"pointer",marginTop:6 }}>
           🎯 UNIRME AL COMANDO ALFA
         </button>
         <p style={{ color:MUTED,fontSize:11,textAlign:"center",margin:"10px 0 0" }}>Sin spam. Solo actualizaciones del reto.</p>
@@ -614,7 +614,7 @@ export default function App() {
         {tabs.map(({id,label,Icon})=>{
           const a=tab===id;
           return (
-            <button key={id} onClick={()=>setTab(id)} className="nav-btn" style={{ background:a?"rgba(0,255,136,0.1)":"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"2px 8px" }}>
+            <button key={id} onClick={()=>setTab(id)} className="nav-btn" style={{ background:a?"rgba(125,160,77,0.15)":"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"2px 8px" }}>
               <Icon size={18} color={a?GREEN:MUTED} />
               <span className="nav-text" style={{ fontSize:9,color:a?GREEN:MUTED,fontWeight:a?700:400 }}>{label}</span>
             </button>

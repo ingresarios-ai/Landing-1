@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, ShieldCheck, Zap, PlayCircle, AlertTriangle, Eye, MousePointer2 } from 'lucide-react';
+import { TrendingUp, Send, ShieldCheck, Zap, PlayCircle, AlertTriangle, Eye, MousePointer2 } from 'lucide-react';
 import { BackgroundGrid } from './components/v3/BackgroundGrid';
 import { RegistrationFormV3 } from './components/v3/RegistrationFormV3';
 
@@ -323,12 +323,11 @@ export const LandingV3 = () => {
             >
               <button 
                 onClick={() => document.getElementById('registro')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative inline-flex items-center justify-center px-8 py-5 bg-brand-green text-brand-base font-black text-lg md:text-xl uppercase tracking-tighter rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(125,160,77,0.4)] active:scale-95"
+                className="group relative inline-flex items-center justify-center px-10 py-6 bg-[#7DA04D] text-black font-extrabold text-xl md:text-2xl uppercase tracking-tighter rounded-2xl overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(125,160,77,0.4)] active:scale-95"
               >
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                <span className="relative flex items-center gap-3">
-                  ¡QUIERO ASEGURAR MI CUPO GRATIS!
-                  <Zap className="w-6 h-6 fill-current" />
+                <span className="relative flex items-center gap-4">
+                  RESERVAR MI CUPO GRATIS
+                  <Send className="w-7 h-7 stroke-[3px] -rotate-12 group-hover:translate-x-1 transition-transform" />
                 </span>
               </button>
               

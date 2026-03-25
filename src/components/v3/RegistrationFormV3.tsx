@@ -157,10 +157,10 @@ export const RegistrationFormV3 = () => {
         <button 
           type="submit"
           disabled={loading}
-          className="w-full bg-brand-green hover:bg-brand-green/90 text-brand-base font-black py-5 rounded-lg transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group text-sm tracking-tighter disabled:opacity-50"
+          className="w-full bg-[#7DA04D] hover:bg-[#8eb35c] text-black font-extrabold py-5 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 group text-lg tracking-tighter disabled:opacity-50 shadow-xl shadow-[#7DA04D]/25"
         >
           {loading ? "PROCESANDO..." : "RESERVAR MI CUPO GRATIS"}
-          <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <Send className="w-5 h-5 stroke-[2.5px] -rotate-12 group-hover:translate-x-1 transition-transform" />
         </button>
 
         <div className="flex items-center justify-center gap-2 text-[10px] text-brand-text-muted/60 uppercase tracking-widest pt-2 font-medium">

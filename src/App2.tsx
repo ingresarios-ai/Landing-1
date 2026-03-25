@@ -170,7 +170,7 @@ const S: Record<string, React.CSSProperties> = {
   textarea: { background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.13)", borderRadius:8, padding:"9px 12px", color:"#fff", fontSize:13, width:"100%", outline:"none", resize:"vertical", boxSizing:"border-box", lineHeight:1.6 },
   label:    { color:"#888", fontSize:11, marginBottom:4, display:"block", textTransform:"uppercase", letterSpacing:1 },
 };
-const glowBtn = (c="#00f5a0",sm?: boolean): React.CSSProperties => ({ background:`linear-gradient(135deg,${c}22,${c}44)`, border:`1px solid ${c}77`, color:c, borderRadius:8, padding:sm?"7px 14px":"10px 22px", cursor:"pointer", fontWeight:700, fontSize:sm?12:13, transition:"all .2s" });
+const glowBtn = (c="#7DA04D",sm?: boolean): React.CSSProperties => ({ background:`linear-gradient(135deg,${c}22,${c}44)`, border:`1px solid ${c}77`, color:c, borderRadius:8, padding:sm?"7px 14px":"10px 22px", cursor:"pointer", fontWeight:700, fontSize:sm?12:13, transition:"all .2s" });
 
 // ── PREMIUM ───────────────────────────────────────────────────
 // ── PREMIUM ───────────────────────────────────────────────────
@@ -225,7 +225,7 @@ function QuizScreen({ onComplete }: { onComplete: (name: string, arq: string) =>
           <div style={{ color:"#888", fontSize:12, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>¿Cómo te llamamos?</div>
           <input style={{ ...S.inp, textAlign:"center", fontSize:15 }} placeholder="Tu nombre o apodo de trader" value={nombre} onChange={e=>setNombre(e.target.value)} onKeyDown={e=>e.key==="Enter"&&setStep(0)} />
         </div>
-        <button onClick={()=>setStep(0)} style={{ background:"linear-gradient(135deg,#00f5a0,#00d4ff)", border:"none", borderRadius:12, padding:"16px 40px", cursor:"pointer", fontWeight:900, fontSize:16, color:"#000", width:"100%", boxShadow:"0 4px 32px #00f5a033" }}>
+        <button onClick={()=>setStep(0)} style={{ background:"linear-gradient(135deg,#7DA04D,#5D802D)", border:"none", borderRadius:12, padding:"16px 40px", cursor:"pointer", fontWeight:900, fontSize:16, color:"#000", width:"100%", boxShadow:"0 4px 32px #7DA04D33" }}>
           Comenzar el Quiz →
         </button>
       </div>
@@ -241,7 +241,7 @@ function QuizScreen({ onComplete }: { onComplete: (name: string, arq: string) =>
             <div style={{ color:"#555", fontSize:12 }}>Pregunta {step+1} de 9</div>
           </div>
           <div style={{ background:"rgba(255,255,255,0.06)", borderRadius:6, height:6 }}>
-            <div style={{ background:"linear-gradient(90deg,#00f5a0,#00d4ff)", borderRadius:6, height:6, width:`${pct}%`, transition:"width .5s ease" }}/>
+            <div style={{ background:"#7DA04D", borderRadius:6, height:6, width:`${pct}%`, transition:"width .5s ease" }}/>
           </div>
         </div>
         <div style={{ ...S.card, marginBottom:16, padding:"28px 24px", textAlign:"center", background:"rgba(255,255,255,0.03)" }}>
@@ -250,8 +250,8 @@ function QuizScreen({ onComplete }: { onComplete: (name: string, arq: string) =>
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
           {q.opciones.map((op, i) => (
-            <button key={i} onClick={()=>handleOpcion(op.valor)} style={{ background:seleccion===op.valor?"rgba(0,245,160,0.15)":"rgba(255,255,255,0.03)", border:`1.5px solid ${seleccion===op.valor?"#00f5a0":"rgba(255,255,255,0.1)"}`, borderRadius:12, padding:"14px 20px", cursor:"pointer", color:seleccion===op.valor?"#00f5a0":"#ccc", fontSize:14, textAlign:"left", fontWeight:seleccion===op.valor?700:400 }}>
-              <span style={{ marginRight:12, color:seleccion===op.valor?"#00f5a0":"#444", fontWeight:700 }}>{String.fromCharCode(65+i)}.</span>
+            <button key={i} onClick={()=>handleOpcion(op.valor)} style={{ background:seleccion===op.valor?"rgba(125,160,77,0.15)":"rgba(255,255,255,0.03)", border:`1.5px solid ${seleccion===op.valor?"#7DA04D":"rgba(255,255,255,0.1)"}`, borderRadius:12, padding:"14px 20px", cursor:"pointer", color:seleccion===op.valor?"#7DA04D":"#ccc", fontSize:14, textAlign:"left", fontWeight:seleccion===op.valor?700:400 }}>
+              <span style={{ marginRight:12, color:seleccion===op.valor?"#7DA04D":"#444", fontWeight:700 }}>{String.fromCharCode(65+i)}.</span>
               {op.texto}
             </button>
           ))}
@@ -286,7 +286,7 @@ function ResultadoScreen({ arquetipo, onEnter }: { nombre: string, arquetipo: st
             </div>
           ))}
         </div>
-        <button onClick={onEnter} style={{ background:`linear-gradient(135deg,${A.color},${A.color}aa)`, border:"none", borderRadius:14, padding:"18px 0", cursor:"pointer", fontWeight:900, fontSize:17, color:"#000", width:"100%", boxShadow:`0 4px 32px ${A.color}44` }}>
+        <button onClick={onEnter} style={{ background:"linear-gradient(135deg,#7DA04D,#5D802D)", border:"none", borderRadius:14, padding:"18px 0", cursor:"pointer", fontWeight:900, fontSize:17, color:"#000", width:"100%", boxShadow:"0 4px 32px #7DA04D44" }}>
           Entrar al Simulador INGRESARIOS {A.emoji}
         </button>
       </div>
@@ -311,7 +311,7 @@ export default function App2() {
     <div style={S.app}>
       <div style={{ borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"20px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(10px)" }}>
         <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-          <div style={{ fontWeight:900,fontSize:17,background:"linear-gradient(90deg,#00f5a0,#00d4ff)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>⚡ INGRESARIOS V2</div>
+          <div style={{ fontWeight:900,fontSize:17,color:"#7DA04D" }}>⚡ INGRESARIOS V2</div>
         </div>
         <div style={{ display:"flex",gap:7,alignItems:"center" }}>
            <div style={{ ...S.cardSm,padding:"4px 10px" }}><span style={{ color:A.color,fontWeight:700 }}>{A.emoji} {nombre}</span></div>

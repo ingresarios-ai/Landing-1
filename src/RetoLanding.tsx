@@ -176,7 +176,7 @@ export default function RetoLanding() {
             {/* Row 4: CTA full width */}
             <button
               type="submit" disabled={isSubmitting}
-              className="w-full kinetic-gradient text-on-primary-fixed font-headline font-extrabold py-4 rounded-xl text-base hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
+              className="w-full bg-[#7DA04D] text-black font-headline font-extrabold py-4 rounded-xl text-base hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-[#7DA04D]/25 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
             >
               {isSubmitting ? "Procesando..." : "¡QUIERO ENTRAR AL RETO!"}
             </button>
