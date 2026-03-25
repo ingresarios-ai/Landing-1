@@ -106,19 +106,19 @@ export const LandingV3 = () => {
               </h1>
               <p className="text-base md:text-xl text-brand-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 Del 20 de abril al 3 de mayo, abrimos la{" "}
-                <span className="bg-brand-orange text-brand-base px-2 py-0.5 rounded font-bold">
+                <span className="text-brand-orange font-bold uppercase transition-colors">
                   bitácora técnica
                 </span>{" "}
                 de una{" "}
-                <span className="bg-brand-green text-brand-base px-2 py-0.5 rounded font-bold">
+                <span className="text-brand-green font-bold uppercase transition-colors">
                   cuenta real
                 </span>{" "}
                 para llevarla de{" "}
-                <span className="bg-brand-green text-brand-base px-2 py-0.5 rounded font-bold">
+                <span className="text-white font-bold uppercase transition-colors">
                   2k a 20k
                 </span>
                 . Sin filtros ni ediciones: observa la{" "}
-                <span className="bg-brand-green text-brand-base px-2 py-0.5 rounded font-bold">
+                <span className="text-white font-bold uppercase transition-colors">
                   ejecución profesional
                 </span>{" "}
                 frente a tus ojos.
