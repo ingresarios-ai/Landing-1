@@ -24,6 +24,16 @@
   @apply w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-green/50 transition-colors text-white placeholder:text-white/20;
 }
 
+/* Fix autofill in Webkit (Chrome/Safari) for dark mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #0B0B0C inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .gradient-text {
   @apply text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-emerald-400;
 }

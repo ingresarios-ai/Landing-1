@@ -33,7 +33,8 @@ export const RegistrationFormV3 = () => {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [country, setCountry] = useState({ flag: "🌐", code: "" });
+  const [selectedIso, setSelectedIso] = useState<string>("CO");
+  const country = COUNTRY_DATA[selectedIso] || { flag: "🌐", code: "" };
 
   const getCountry = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "Desconocido"; }};
 
@@ -42,13 +43,12 @@ export const RegistrationFormV3 = () => {
       .then(res => res.json())
       .then(data => {
         const isoCode = data.country;
-        const c = COUNTRY_DATA[isoCode] || { flag: "🌐", code: "" };
-        setCountry(c);
-        if (c.code) {
-          setTelefono(prev => prev ? prev : c.code + " ");
+        if (COUNTRY_DATA[isoCode]) {
+          setSelectedIso(isoCode);
+          setTelefono(prev => prev ? prev : COUNTRY_DATA[isoCode].code + " ");
         }
       })
-      .catch(() => setCountry({ flag: "🗺️", code: "" }));
+      .catch(() => setSelectedIso("CO"));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -151,15 +151,31 @@ export const RegistrationFormV3 = () => {
           <label className="block text-[10px] font-bold text-brand-text-muted uppercase tracking-widest mb-1">
             Teléfono Móvil
           </label>
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl pointer-events-none select-none">
-              {country.flag}
+          <div className="relative flex">
+            {/* Contenedor de la bandera y el dropdown transparente */}
+            <div className="absolute left-0 top-0 bottom-0 w-[4rem] flex items-center justify-center border-r border-white/10 overflow-hidden">
+              <select 
+                className="w-full h-full absolute inset-0 opacity-0 cursor-pointer z-10"
+                value={selectedIso}
+                onChange={(e) => {
+                  const newIso = e.target.value;
+                  setSelectedIso(newIso);
+                  if (COUNTRY_DATA[newIso]) {
+                    setTelefono(COUNTRY_DATA[newIso].code + " ");
+                  }
+                }}
+              >
+                {Object.entries(COUNTRY_DATA).map(([iso, data]) => (
+                  <option key={iso} value={iso} className="text-black">{data.flag} {data.code}</option>
+                ))}
+              </select>
+              <div className="text-2xl pointer-events-none mt-1">{country.flag || "🌐"}</div>
             </div>
             <input 
               required 
               type="tel" 
               placeholder={`${country.code} tu número`}
-              className="input-field pl-12"
+              className="input-field pl-[4.5rem]"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
             />
