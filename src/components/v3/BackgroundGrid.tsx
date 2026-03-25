@@ -22,7 +22,7 @@ export const BackgroundGrid = () => {
       <div 
         className="absolute inset-0 opacity-30" 
         style={{ 
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 1px)`,
           backgroundSize: '60px 60px'
         }} 
       />
@@ -30,7 +30,8 @@ export const BackgroundGrid = () => {
       {/* Elementos de Trading (SVG) */}
       <svg 
         viewBox="0 0 3000 1000" 
-        className="absolute inset-0 w-full h-full opacity-60 preserve-3d"
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: 0.6 }}
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
@@ -138,15 +139,15 @@ export const BackgroundGrid = () => {
 
         {/* Indicador Móvil: Un pequeño punto brillante que recorre la línea de tendencia */}
         <motion.circle
-          cx="0"
-          cy="0"
-          r="7"
+          cx={0}
+          cy={0}
+          r={7}
           fill="#7DA04D"
           filter="url(#glowEffect)"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0, x: 0, y: 900 }}
           animate={{
-            cx: [0, 3000],
-            cy: [900, 150], // Aproximación lineal simplificada del recorrido
+            x: [0, 3000],
+            y: [900, 150], // Aproximación lineal simplificada del recorrido
             opacity: [0, 1, 1, 0]
           }}
           transition={{
@@ -159,7 +160,10 @@ export const BackgroundGrid = () => {
       </svg>
 
       {/* Máscara radial para oscurecer hacia los bordes y crear efecto de enfoque central */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0B0B0C_90%)] pointer-events-none" />
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{ background: "radial-gradient(circle at center, rgba(11,11,12,0) 0%, rgba(11,11,12,1) 90%)" }}
+      />
 
       {/* Detalles Finales: Overlay de texto con precio ficticio parpadeando suavemente */}
       <div className="absolute top-[25%] right-[8%] flex flex-col items-end gap-1 opacity-40 pointer-events-none">
