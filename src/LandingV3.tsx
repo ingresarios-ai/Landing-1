@@ -79,7 +79,7 @@ export const LandingV3 = () => {
           <img 
             src="/logo-app.png" 
             alt="Reto 2k a 20k Logo" 
-            className="h-12 w-auto" 
+            className="h-36 w-auto" 
           />
         </div>
         <div className="hidden md:flex items-center gap-4 text-[10px] font-black text-brand-text-muted uppercase tracking-[0.2em]">
