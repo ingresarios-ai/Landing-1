@@ -74,7 +74,7 @@ export const LandingV3 = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="container mx-auto px-6 pt-8 pb-2 flex justify-between items-center relative z-10">
+      <nav className="container mx-auto px-6 pt-8 pb-2 flex justify-center md:justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
           <img 
             src="/logo-app.png" 
