@@ -105,13 +105,9 @@ export const LandingV3 = () => {
                 Lo que los <span className="crayon-underline">"gurús de trading"</span> no se atreven a mostrar en vivo.
               </h1>
               <p className="text-base md:text-xl text-brand-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Del 20 de abril al 3 de mayo, abrimos la{" "}
-                <span className="text-brand-orange font-bold uppercase transition-colors">
-                  bitácora técnica
-                </span>{" "}
-                de una{" "}
+                Del 20 de abril al 3 de mayo,{" "}
                 <span className="text-brand-green font-bold uppercase transition-colors">
-                  cuenta real
+                  abriremos una cuenta real
                 </span>{" "}
                 para llevarla de{" "}
                 <span className="text-white font-bold uppercase transition-colors">
