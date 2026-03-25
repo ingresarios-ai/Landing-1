@@ -5,7 +5,6 @@
   --color-brand-base: #0B0B0C;
   --color-brand-green: #7DA04D;
   --color-brand-orange: #F5A623;
-  --color-brand-blue: #00D4FF;
   --color-brand-navy: #14213D;
   --color-brand-text-muted: #D0D3D6;
   --color-surface: rgba(255, 255, 255, 0.03);
@@ -26,7 +25,7 @@
 }
 
 .gradient-text {
-  @apply text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-[#00D4FF];
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-emerald-400;
 }
 
 .crayon-underline {
