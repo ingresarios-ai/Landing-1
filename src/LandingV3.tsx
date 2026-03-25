@@ -76,9 +76,11 @@ export const LandingV3 = () => {
       {/* Navigation */}
       <nav className="container mx-auto px-6 py-8 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-brand-green rounded flex items-center justify-center">
-            <TrendingUp className="text-brand-base w-5 h-5" />
-          </div>
+          <img 
+            src="/logo-app.png" 
+            alt="Reto 2k a 20k Logo" 
+            className="h-12 w-auto" 
+          />
         </div>
         <div className="hidden md:flex items-center gap-4 text-[10px] font-black text-brand-text-muted uppercase tracking-[0.2em]">
           <span>Reality de Trading en Vivo</span>
