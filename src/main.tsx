@@ -19,6 +19,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/pre" element={<PreApp />} />
         <Route path="/app2" element={<App2 />} />
         <Route path="/registro1" element={<LandingV3 />} />
+        <Route path="/landing1" element={<LandingV3 />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
