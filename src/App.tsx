@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from "recharts";
 import { Home, BarChart2, BookOpen, Users } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { LandingV3 } from "./LandingV3";
 import { supabase } from "./lib/supabase";
 
@@ -181,7 +180,6 @@ export default function App() {
   const [alfaVideos, setAlfaVideos] = useState<any[]>([]);
   const [alfaUsers, setAlfaUsers] = useState<any[]>([]);
   const [alfaVideoUrl, setAlfaVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-  const [introVideoUrl, setIntroVideoUrl] = useState("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   const [alfaDia, setAlfaDia] = useState(1);
   const [aVideoDia, setAVideoDia] = useState(1);
   const [editingOpId, setEditingOpId] = useState<any>(null);
@@ -190,13 +188,7 @@ export default function App() {
   // Cargar datos de Supabase
   useEffect(() => {
     const fetchData = async () => {
-      // Configuraciones (solo intro_video_url)
-      const { data: config } = await supabase.from("app_config").select("*");
-      if (config) {
-        config.forEach(c => {
-          if (c.key === "intro_video_url") setIntroVideoUrl(c.value);
-        });
-      }
+      // Configuraciones (legacy check removed)
       // Videos del día (historial)
       const { data: vids } = await supabase.from("alfa_videos").select("*").order("dia", { ascending: true });
       if (vids && vids.length > 0) {

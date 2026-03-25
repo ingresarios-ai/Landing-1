@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 export const BackgroundGrid = () => {
   // Generate a random-looking but generally upward path for the trading line

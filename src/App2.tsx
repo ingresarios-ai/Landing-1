@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { useState } from "react";
 
 // ── QUIZ DATA ─────────────────────────────────────────────────
 const QUIZ = [
@@ -159,32 +158,10 @@ const SYMS: Record<string, any> = {
   TSLA: { label:"Tesla Inc.", base:240,  vol:9,   color:"#ff6b6b", lot:10 },
   NVDA: { label:"NVIDIA",     base:875,  vol:18,  color:"#ffd700", lot:1  },
 };
-const MD: Record<string, any[]> = {}; Object.keys(SYMS).forEach(s => { MD[s] = genData(SYMS[s].base, SYMS[s].vol); });
-const price = (s: string) => MD[s][MD[s].length-1].c;
-const chg   = (s: string) => { const d=MD[s]; return ((d[d.length-1].c-d[d.length-2].c)/d[d.length-2].c)*100; };
-
-const SOMBRA = [
-  { dia:1,titulo:"El Mercado como Espejo",emoji:"🪞",subtitulo:"Tus proyecciones en el precio",ejercicio:"Escribe 3 veces recientes en que culpaste al mercado por tus pérdidas. ¿Qué te dice eso sobre ti?",pregunta:"¿Qué parte de ti mismo estás proyectando en el mercado cuando dices 'el mercado está loco'?",duracion:"15 min",bgColor:"#bf5fff"},
-  { dia:2,titulo:"El Trader que Temes Ser",emoji:"😨",subtitulo:"El miedo como brújula de la sombra",ejercicio:"Describe al peor trader imaginable. ¿Qué características tiene? Ahora identifica cuáles existen en ti, aunque sea mínimamente.",pregunta:"¿Qué comportamiento de otros traders te irrita más? Ese es tu espejo.",duracion:"20 min",bgColor:"#ff6b6b"},
-  { dia:3,titulo:"La Rabia del Stop Loss",emoji:"🔥",subtitulo:"Emociones que sabotean tu ejecución",ejercicio:"Recuerda un trade donde la rabia te impidió respetar tu plan. Escribe qué sentiste y qué pensamiento lo disparó.",pregunta:"¿Qué necesitas demostrarle a alguien cuando haces trading?",duracion:"20 min",bgColor:"#ff9500"},
-  { dia:4,titulo:"La Envidia del Trader Exitoso",emoji:"💚",subtitulo:"Lo que deseas y niegas desear",ejercicio:"Piensa en un trader que admiras y envidias. Escribe 5 cosas que tiene y tú quieres. Acepta que quererlo es válido.",pregunta:"¿Qué te impide creer que tú también mereces ese nivel de éxito?",duracion:"15 min",bgColor:"#00c853"},
-  { dia:5,titulo:"El Impostor Interior",emoji:"🎭",subtitulo:"¿Realmente crees que puedes?",ejercicio:"Escribe las 3 voces internas que más te atacan antes de ejecutar un trade. ¿A quién le pertenecen originalmente?",pregunta:"Si supieras con certeza que no puedes fracasar, ¿qué trade harías hoy?",duracion:"20 min",bgColor:"#00d4ff"},
-  { dia:6,titulo:"El Saboteador Inconsciente",emoji:"🪤",subtitulo:"Patrones que se repiten sin razón aparente",ejercicio:"Analiza tus últimos 5 trades perdedores. Busca UN patrón de comportamiento repetido. Analízate a ti, no al mercado.",pregunta:"¿Qué beneficio oculto obtienes cuando pierdes?",duracion:"25 min",bgColor:"#ffd700"},
-  { dia:7,titulo:"El Trader Completo",emoji:"⚡",subtitulo:"Integración — luz y sombra unidas",ejercicio:"Escribe una carta a tu 'trader sombra'. Agradécele su protección y dile que ya no la necesitas para sobrevivir.",pregunta:"¿Quién eres como trader cuando integras todo lo aprendido esta semana?",duracion:"30 min",bgColor:"#00f5a0"},
-];
-const FLOW = [
-  { dia:1,titulo:"Diagnóstico de tu Flow",emoji:"🔬",subtitulo:"¿Cuándo fluyes naturalmente?",ejercicio:"Piensa en los 3 mejores días de trading. Describe qué condiciones estaban presentes: hora, estado emocional, preparación, entorno.",pregunta:"¿Qué tienen en común tus mejores sesiones?",duracion:"20 min",bgColor:"#00d4ff"},
-  { dia:2,titulo:"Ritual de Activación",emoji:"🧘",subtitulo:"Los 15 minutos que lo cambian todo",ejercicio:"Diseña tu ritual pre-trading: 1 ejercicio de respiración, 1 revisión del plan y 1 afirmación de intención. Escríbelo detallado.",pregunta:"¿Qué haces en los 30 minutos antes de tradear? ¿Te prepara o te dispersa?",duracion:"20 min",bgColor:"#00f5a0"},
-  { dia:3,titulo:"El Canal Óptimo",emoji:"🎯",subtitulo:"Desafío vs. habilidad — la zona de flow",ejercicio:"Califica del 1-10 tu nivel de habilidad y el desafío que buscas. Si la diferencia es mayor a 3, estás fuera del flow. Ajusta.",pregunta:"¿Estás operando en instrumentos fuera de tu nivel real?",duracion:"15 min",bgColor:"#bf5fff"},
-  { dia:4,titulo:"Eliminar Distractores",emoji:"🔇",subtitulo:"El flow requiere entorno controlado",ejercicio:"Lista los 5 mayores distractores de tu sesión. Para cada uno, define UNA acción concreta para eliminarlo mañana.",pregunta:"¿Qué tanto control tienes sobre tu entorno cuando tradeas?",duracion:"15 min",bgColor:"#ff6b6b"},
-  { dia:5,titulo:"Anclas de Flow",emoji:"⚓",subtitulo:"Disparadores que activan tu estado óptimo",ejercicio:"Identifica 3 anclas sensoriales asociadas a tu mejor estado: canción, aroma, postura o frase. Practica activarlas ahora.",pregunta:"¿Puedes acceder a tu flow de forma intencional o solo ocurre por accidente?",duracion:"20 min",bgColor:"#ffd700"},
-  { dia:6,titulo:"Recuperación y Reset",emoji:"🔄",subtitulo:"Salir del flow y volver a él",ejercicio:"Escribe tu protocolo de reset para cuando pierdes el flow: 3 pasos ejecutables en menos de 5 minutos.",pregunta:"¿Qué haces cuando notas que estás 'fuera de ti' durante el trading?",duracion:"20 min",bgColor:"#ff9500"},
-  { dia:7,titulo:"Tu Protocolo de Flow Personal",emoji:"🏆",subtitulo:"El sistema que siempre te lleva al peak",ejercicio:"Sintetiza todo en tu 'Protocolo de Flow INGRESARIOS': ritual, anclas, canal óptimo y reset. Escríbelo como manual de tu mejor yo.",pregunta:"¿Cómo es el trader que vive en estado de flow la mayoría del tiempo?",duracion:"30 min",bgColor:"#00f5a0"},
-];
+const MD: Record<string, any[]> = {}; 
+Object.keys(SYMS).forEach(s => { MD[s] = genData(SYMS[s].base, SYMS[s].vol); });
 
 // ── UTILS ─────────────────────────────────────────────────────
-const fmt  = (n: number) => n?.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtP = (n: number) => (n>=0?"+":"")+fmt(n);
 const S: Record<string, React.CSSProperties> = {
   app:      { background:"#080c10", minHeight:"100vh", color:"#dde", fontFamily:"'Inter',system-ui,sans-serif", fontSize:13 },
   card:     { background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:12, padding:16 },
@@ -193,67 +170,11 @@ const S: Record<string, React.CSSProperties> = {
   textarea: { background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.13)", borderRadius:8, padding:"9px 12px", color:"#fff", fontSize:13, width:"100%", outline:"none", resize:"vertical", boxSizing:"border-box", lineHeight:1.6 },
   label:    { color:"#888", fontSize:11, marginBottom:4, display:"block", textTransform:"uppercase", letterSpacing:1 },
 };
-const navBtn = (a: boolean): React.CSSProperties => ({ background:a?"rgba(0,245,160,0.12)":"transparent", border:a?"1px solid rgba(0,245,160,0.35)":"1px solid transparent", color:a?"#00f5a0":"#777", borderRadius:8, padding:"7px 13px", cursor:"pointer", fontSize:12, fontWeight:a?700:400, transition:"all .2s", whiteSpace:"nowrap" });
 const glowBtn = (c="#00f5a0",sm?: boolean): React.CSSProperties => ({ background:`linear-gradient(135deg,${c}22,${c}44)`, border:`1px solid ${c}77`, color:c, borderRadius:8, padding:sm?"7px 14px":"10px 22px", cursor:"pointer", fontWeight:700, fontSize:sm?12:13, transition:"all .2s" });
-const redBtn = (sm?: boolean): React.CSSProperties => ({ background:"linear-gradient(135deg,#ff6b6b22,#ff6b6b44)", border:"1px solid #ff6b6b77", color:"#ff6b6b", borderRadius:8, padding:sm?"7px 14px":"10px 22px", cursor:"pointer", fontWeight:700, fontSize:sm?12:13 });
-
-const ChartTip = ({ active, payload, label }: any) => {
-  if (!active||!payload?.length) return null;
-  return <div style={{ ...S.cardSm, minWidth:110 }}><div style={{ color:"#888",fontSize:10 }}>{label}</div><div style={{ color:"#00f5a0",fontWeight:700 }}>${fmt(payload[0]?.value)}</div></div>;
-};
 
 // ── PREMIUM ───────────────────────────────────────────────────
-const WA_NUMBER = "573227476543";
-const WA_MSG    = encodeURIComponent("¡Hola Juan! Quiero acceder al Plan PREMIUM de INGRESARIOS 🚀");
-const WA_LINK   = `https://wa.me/${WA_NUMBER}?text=${WA_MSG}`;
-const PREMIUM_FEATURES = [
-  {free:true, label:"Simulador con 5 activos"},{free:true, label:"Método PEDEM completo"},{free:true, label:"Bitácora de trades"},
-  {free:true, label:"Reto Sombra 7 días"},{free:true, label:"Reto Flow 7 días"},{free:true, label:"GENY IA Chat (limitado)"},
-  {free:false,label:"20+ activos en vivo"},{free:false,label:"Torneos con premios reales"},{free:false,label:"Reto 21 — Certificación"},
-  {free:false,label:"GENY IA ilimitado"},{free:false,label:"Academia 7 Mundos"},{free:false,label:"Señales Geny Trend"},
-  {free:false,label:"Comunidad privada"},{free:false,label:"Sesiones en vivo con Juan"},
-];
-function PremiumModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200,padding:16 }}>
-      <div style={{ maxWidth:520,width:"100%",maxHeight:"92vh",overflowY:"auto",borderRadius:16,border:"1px solid rgba(255,215,0,0.25)",background:"linear-gradient(160deg,#0d1117,#0f1620)",padding:0 }}>
-        <div style={{ background:"linear-gradient(135deg,#ffd70022,#ff990022)",borderBottom:"1px solid rgba(255,215,0,0.2)",padding:"24px 24px 20px",borderRadius:"16px 16px 0 0",textAlign:"center" }}>
-          <div style={{ fontSize:38,marginBottom:8 }}>👑</div>
-          <div style={{ fontWeight:900,fontSize:22,background:"linear-gradient(90deg,#ffd700,#ffaa00)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>INGRESARIOS PREMIUM</div>
-          <div style={{ color:"#aaa",fontSize:13,marginTop:6 }}>Acceso completo a la plataforma institucional</div>
-          <div style={{ marginTop:14,display:"inline-block",background:"rgba(255,215,0,0.1)",border:"1px solid rgba(255,215,0,0.3)",borderRadius:8,padding:"6px 20px" }}>
-            <span style={{ color:"#888",fontSize:12,textDecoration:"line-through" }}>$197 USD/mes</span>
-            <span style={{ color:"#ffd700",fontWeight:900,fontSize:20,marginLeft:10 }}>$97 USD</span>
-            <span style={{ color:"#888",fontSize:12 }}>/mes</span>
-          </div>
-        </div>
-        <div style={{ padding:"20px 24px" }}>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:20 }}>
-            {PREMIUM_FEATURES.map((f,i) => (
-              <div key={i} style={{ display:"flex",alignItems:"center",gap:8,padding:"7px 10px",borderRadius:8,background:f.free?"rgba(255,255,255,0.02)":"rgba(255,215,0,0.05)",border:`1px solid ${f.free?"rgba(255,255,255,0.06)":"rgba(255,215,0,0.15)"}` }}>
-                <span style={{ fontSize:14,flexShrink:0 }}>{f.free?"✅":"⭐"}</span>
-                <span style={{ color:f.free?"#777":"#ddb",fontSize:12 }}>{f.label}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ background:"rgba(0,245,160,0.06)",border:"1px solid rgba(0,245,160,0.2)",borderRadius:10,padding:"12px 16px",marginBottom:18,display:"flex",gap:12,alignItems:"center" }}>
-            <span style={{ fontSize:22 }}>🛡️</span>
-            <div><div style={{ color:"#00f5a0",fontWeight:700,fontSize:13 }}>Garantía 7 días sin riesgo</div><div style={{ color:"#777",fontSize:12,marginTop:2 }}>Si no ves valor, te devolvemos el 100% sin preguntas.</div></div>
-          </div>
-          <a href={WA_LINK} target="_blank" rel="noreferrer" style={{ display:"block",textDecoration:"none" }}>
-            <div style={{ background:"linear-gradient(135deg,#25d36622,#25d36644)",border:"2px solid #25d366aa",borderRadius:12,padding:"16px 20px",textAlign:"center",cursor:"pointer" }}>
-              <div style={{ fontSize:24,marginBottom:4 }}>💬</div>
-              <div style={{ color:"#25d366",fontWeight:900,fontSize:16 }}>Quiero acceso PREMIUM</div>
-              <div style={{ color:"#25d36699",fontSize:12,marginTop:4 }}>Toca aquí → te contactamos por WhatsApp en menos de 2 horas</div>
-            </div>
-          </a>
-          <button onClick={onClose} style={{ marginTop:12,background:"transparent",border:"none",color:"#555",fontSize:12,width:"100%",cursor:"pointer",padding:"8px 0" }}>Seguir con versión gratuita →</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+// ── PREMIUM ───────────────────────────────────────────────────
+// Removed unused PREMIUM constants
 // ════════════════════════════════════════════════════════════════
 // QUIZ SCREEN
 // ════════════════════════════════════════════════════════════════
@@ -343,22 +264,8 @@ function QuizScreen({ onComplete }: { onComplete: (name: string, arq: string) =>
 // ════════════════════════════════════════════════════════════════
 // RESULTADO SCREEN
 // ════════════════════════════════════════════════════════════════
-function ResultadoScreen({ nombre, arquetipo, onEnter }: { nombre: string, arquetipo: string, onEnter: () => void }) {
+function ResultadoScreen({ arquetipo, onEnter }: { nombre: string, arquetipo: string, onEnter: () => void }) {
   const A = ARQUETIPOS[arquetipo];
-  const [genyInsight, setGenyInsight]   = useState("");
-  const [loadingGeny, setLoadingGeny]   = useState(false);
-
-  useEffect(() => {
-    // Note: This fetch to Anthropic is for client-side demo and may have CORS/Key issues in dev
-    const getInsight = async () => {
-      setLoadingGeny(true);
-      try {
-        setGenyInsight(`${nombre}, tu arquetipo revela mucho sobre tu journey. El método PEDEM fue diseñado para traders exactamente como tú. Da el primer paso hoy.`);
-      } catch { }
-      setLoadingGeny(false);
-    };
-    getInsight();
-  }, [nombre]);
 
   return (
     <div style={{ minHeight:"100vh", background:"#080c10", display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
@@ -394,7 +301,6 @@ export default function App2() {
   const [appState, setAppState] = useState("quiz");
   const [nombre, setNombre]     = useState("");
   const [arquetipo, setArq]     = useState("explorador");
-  const [screen, setScreen]     = useState("dashboard");
 
   if(appState==="quiz")  return <QuizScreen onComplete={(n,a)=>{setNombre(n);setArq(a);setAppState("resultado");}}/>;
   if(appState==="resultado") return <ResultadoScreen nombre={nombre} arquetipo={arquetipo} onEnter={()=>setAppState("app")}/>;

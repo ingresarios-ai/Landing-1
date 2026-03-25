@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { TrendingUp, ShieldCheck, Zap, PlayCircle, AlertTriangle, Eye, MousePointer2 } from 'lucide-react';
 import { BackgroundGrid } from './components/v3/BackgroundGrid';
