@@ -74,7 +74,7 @@ export const LandingV3 = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="container mx-auto px-6 pt-8 pb-2 flex justify-center md:justify-between items-center relative z-10">
+      <nav className="container mx-auto px-6 pt-8 pb-6 flex justify-center md:justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
           <img 
             src="/logo-app.png" 
@@ -89,7 +89,7 @@ export const LandingV3 = () => {
         </div>
       </nav>
 
-      <main id="registro" className="container mx-auto px-6 pt-0 pb-24 relative z-10">
+      <main id="registro" className="container mx-auto px-6 md:pt-4 pb-24 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Left Column (Desktop) / Main Flow (Mobile) */}
