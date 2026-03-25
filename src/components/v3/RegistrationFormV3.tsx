@@ -32,24 +32,31 @@ export const RegistrationFormV3 = () => {
   const [loading, setLoading] = useState(false);
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
-  const [wa, setWa] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [country, setCountry] = useState({ flag: "🌐", code: "" });
 
   const getCountry = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "Desconocido"; }};
 
   useEffect(() => {
-    fetch("https://ipapi.co/json/")
+    fetch("https://get.geojs.io/v1/ip/country.json")
       .then(res => res.json())
       .then(data => {
-        const c = COUNTRY_DATA[data.country_code] || { flag: "🌐", code: "+" + data.country_calling_code };
+        const isoCode = data.country;
+        const c = COUNTRY_DATA[isoCode] || { flag: "🌐", code: "" };
         setCountry(c);
-        if (!wa) setWa(c.code + " ");
+        if (c.code) {
+          setTelefono(prev => prev ? prev : c.code + " ");
+        }
       })
-      .catch(() => setCountry({ flag: "🗺️", code: "+" }));
+      .catch(() => setCountry({ flag: "🗺️", code: "" }));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!nombre.trim() || !email.trim() || !telefono.trim()) {
+      alert("Por favor, completa todos los campos obligatorios.");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -61,7 +68,7 @@ export const RegistrationFormV3 = () => {
           tipo: "registro_v3",
           nombre,
           email,
-          telefono: wa.replace(/\s+/g, ""),
+          telefono: telefono.replace(/\s+/g, ""),
           fecha_registro: new Date().toISOString(),
           pais: getCountry(),
           tags: ["Reto2K20K", "NuevoLead", "LandingV3"],
@@ -69,7 +76,7 @@ export const RegistrationFormV3 = () => {
       });
 
       // Save to Supabase
-      const u = { nombre, email, telefono: wa.replace(/\s+/g, ""), pais: getCountry() };
+      const u = { nombre, email, telefono: telefono.replace(/\s+/g, ""), pais: getCountry() };
       await supabase.from("alfa_users").insert([u]);
 
       setIsSubmitted(true);
@@ -142,16 +149,21 @@ export const RegistrationFormV3 = () => {
         </div>
         <div>
           <label className="block text-[10px] font-bold text-brand-text-muted uppercase tracking-widest mb-1">
-            WhatsApp {country.flag}
+            Teléfono Móvil
           </label>
-          <input 
-            required 
-            type="tel" 
-            placeholder="+57..." 
-            className="input-field"
-            value={wa}
-            onChange={(e) => setWa(e.target.value)}
-          />
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl pointer-events-none select-none">
+              {country.flag}
+            </div>
+            <input 
+              required 
+              type="tel" 
+              placeholder={`${country.code} tu número`}
+              className="input-field pl-12"
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+            />
+          </div>
         </div>
 
         <button 
