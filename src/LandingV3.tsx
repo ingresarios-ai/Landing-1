@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { TrendingUp, ShieldCheck, Zap, PlayCircle, AlertTriangle, Eye, MousePointer2 } from 'lucide-react';
 import { BackgroundGrid } from './components/v3/BackgroundGrid';
 import { RegistrationFormV3 } from './components/v3/RegistrationFormV3';
@@ -103,7 +103,7 @@ export const LandingV3 = () => {
                 <span className="gradient-text">
                   RETO 2K A 20K:
                 </span> <br className="hidden lg:block" />
-                Lo que los <span className="crayon-underline text-white">"gurús de trading"</span> no se atreven a mostrar en vivo.
+                Lo que los <span className="crayon-underline">"gurús de trading"</span> no se atreven a mostrar en vivo.
               </h1>
               <p className="text-base md:text-xl text-brand-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 Del 20 de abril al 3 de mayo, abrimos la{" "}
@@ -148,7 +148,7 @@ export const LandingV3 = () => {
                   <Eye className="w-6 h-6" />
                 </div>
                 <h4 className="font-bold text-sm uppercase tracking-wider text-center lg:text-left">BITÁCORA ABIERTA</h4>
-                <p className="text-xs text-brand-text-muted leading-relaxed text-center lg:text-left">Sigue cada operación en tiempo real. Sin ediciones ni filtros: observa la anatomía de una cuenta real en su camino de 2.000 a 2.000.</p>
+                <p className="text-xs text-brand-text-muted leading-relaxed text-center lg:text-left">Sigue cada operación en tiempo real. Sin ediciones ni filtros: observa la anatomía de una cuenta real en su camino de 2.000 a 20.000.</p>
               </motion.div>
 
               <motion.div 
@@ -223,7 +223,7 @@ export const LandingV3 = () => {
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-brand-green/20 rounded-xl flex items-center justify-center backdrop-blur-xl border border-brand-green/30">
                   <PlayCircle className="text-brand-green w-6 h-6" />
                 </div>
-                <p className="text-lg text-brand-text-muted leading-relaxed font-medium text-white/80">
+                <p className="text-lg text-brand-text-muted leading-relaxed font-medium">
                   Del 20 de abril al 3 de mayo, a las 7:00 PM (Colombia), abriremos las puertas de nuestra operativa privada. No es una clase teórica; es la ejecución técnica en vivo de una cuenta real para llevarla de 2.000 a 20.000. Serás testigo de cada decisión, cada entrada y cada gestión de riesgo en tiempo real.
                 </p>
               </div>
@@ -246,6 +246,10 @@ export const LandingV3 = () => {
             >
               <div className="absolute -inset-4 bg-brand-green/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+                {/* Placeholder para la imagen del autor */}
+                <div className="absolute inset-0 flex items-center justify-center text-white/20">
+                  <span className="text-sm font-mono uppercase tracking-widest">Imagen de Juan Fernando Villegas</span>
+                </div>
                 <img 
                   src="https://picsum.photos/seed/mentor/800/1000" 
                   alt="Juan Fernando Villegas" 
@@ -254,6 +258,7 @@ export const LandingV3 = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-base via-transparent to-transparent opacity-60" />
               </div>
+              {/* Elemento decorativo */}
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-brand-green/10 rounded-full blur-3xl -z-10" />
             </motion.div>
 
@@ -279,7 +284,7 @@ export const LandingV3 = () => {
                 </p>
               </blockquote>
 
-              <div className="space-y-6 text-brand-text-muted text-lg leading-relaxed text-white/70">
+              <div className="space-y-6 text-brand-text-muted text-lg leading-relaxed">
                 <p>
                   Juan Fernando Villegas es la mente detrás del Método Ingresarios y uno de los referentes más respetados en la profesionalización del trading en Latinoamérica. Con más de 20 años de experiencia enfrentando la volatilidad de los mercados globales, ha consolidado una carrera basada en la transparencia y la disciplina técnica.
                 </p>
@@ -310,7 +315,7 @@ export const LandingV3 = () => {
                 ¿Estás listo para ver la <br />
                 <span className="text-brand-green">realidad del mercado</span>?
               </h2>
-              <p className="text-lg md:text-xl text-brand-text-muted leading-relaxed max-w-2xl mx-auto font-medium text-white/80">
+              <p className="text-lg md:text-xl text-brand-text-muted leading-relaxed max-w-2xl mx-auto font-medium">
                 Únete a 14 días de trading en vivo y descubre cómo se gestiona una cuenta real con método y tecnología aplicada. El registro es totalmente gratuito, pero el acceso a la plataforma es limitado.
               </p>
             </motion.div>
@@ -346,6 +351,7 @@ export const LandingV3 = () => {
           </div>
         </div>
         
+        {/* Elementos decorativos de fondo para la sección CTA */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-brand-green/10 blur-[100px] rounded-full -z-10" />
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-64 h-64 bg-brand-orange/5 blur-[100px] rounded-full -z-10" />
       </section>
@@ -361,7 +367,7 @@ export const LandingV3 = () => {
             </div>
             
             <div className="space-y-4">
-              <p className="text-[11px] text-brand-text-muted leading-relaxed font-bold uppercase tracking-widest">
+              <p className="text-[11px] text-brand-text-muted leading-relaxed font-medium uppercase tracking-widest">
                 Nota Obligatoria: El trading de activos financieros implica un riesgo real de pérdida. Los resultados mostrados son educativos y no garantizan ganancias futuras. Operativa real sujeta a riesgo de mercado.
               </p>
               <p className="text-[9px] text-brand-text-muted/60 leading-relaxed uppercase tracking-[0.15em]">
