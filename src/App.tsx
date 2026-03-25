@@ -490,7 +490,7 @@ export default function App() {
               {inp("URL del video de YouTube intro",aIntroVideo,setAIntroVideo,"url","🔗",true)}
               <button onClick={async ()=>{ 
                 if(aIntroVideo.trim()){ 
-                  setIntroVideoUrl(aIntroVideo); setAIntroVideo(""); 
+                  setAIntroVideo(""); 
                   await supabase.from("app_config").upsert({ key: "intro_video_url", value: aIntroVideo });
                   setToast("✅ Video intro actualizado"); setTimeout(()=>setToast(null),2500); 
                 }}}
