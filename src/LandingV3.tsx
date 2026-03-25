@@ -74,7 +74,7 @@ export const LandingV3 = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="container mx-auto px-6 py-8 flex justify-between items-center relative z-10">
+      <nav className="container mx-auto px-6 pt-8 pb-2 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
           <img 
             src="/logo-app.png" 
@@ -89,7 +89,7 @@ export const LandingV3 = () => {
         </div>
       </nav>
 
-      <main id="registro" className="container mx-auto px-6 pt-4 md:pt-8 pb-24 relative z-10">
+      <main id="registro" className="container mx-auto px-6 pt-0 pb-24 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Left Column (Desktop) / Main Flow (Mobile) */}
@@ -102,9 +102,6 @@ export const LandingV3 = () => {
               className="text-center lg:text-left"
             >
               <h1 className="text-3xl md:text-6xl font-black leading-[1.1] tracking-tight mb-4 lg:mb-8 uppercase">
-                <span className="gradient-text">
-                  RETO 2K A 20K:
-                </span> <br className="hidden lg:block" />
                 Lo que los <span className="crayon-underline">"gurús de trading"</span> no se atreven a mostrar en vivo.
               </h1>
               <p className="text-base md:text-xl text-brand-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
